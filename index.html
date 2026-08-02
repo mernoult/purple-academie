@@ -1,0 +1,802 @@
+<!--
+  THESIS: Purple Academy est un cahier de comptes éditorial, pas une landing de coach. La page refuse le template fond-crème + serif italique + petites cartes-icônes qu'un modèle sortirait par défaut sur ce sujet.
+  OWN-WORLD: Papier écru #F7F5F0 et champ violet #7C3AED alternés en drenched sections; encre #0A0A0F; accent lime #E8FF6B pour la donnée saillante. DM Serif Display uniquement en display massif, DM Sans en workhorse avec tabular-nums sur tous les chiffres, JetBrains Mono strictement pour les montants et références. Rule lines 1px pleine largeur comme grammaire structurelle. Grille 12 colonnes, marginalia mono en gouttière.
+  STORY: Le visiteur comprend en 3 secondes que ce site pilote de l'argent réel; il croit à la méthode parce qu'il lit de vrais chiffres au premier regard; il télécharge le guide ou écrit un message.
+  FIRST VIEWPORT: h1 serif massif à gauche, lead + CTA violet en dessous. À droite, un vrai relevé mensuel : catégories, montants alignés en tabular nums, delta lime, ligne de total rulée. Aucune carte.
+  FORM: Presse économique éditoriale (Bloomberg Businessweek / Pentagram-Mastercard) croisée avec cahier de comptes. Direction 1/1, choix engagé après avertissement craft-floor sur les eyebrows/section numbers/monos-costume.
+  FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+-->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Audit et conseil en gestion financière du quotidien. Reprenez la main sur votre argent avec une méthode concrète, sans jargon.">
+<title>Purple Academy — Audit & conseil en gestion financière du quotidien</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --violet: #7C3AED;
+    --violet-ink: #4C1D95;
+    --violet-line: rgba(76,29,149,.18);
+    --paper: #FFFFFF;
+    --paper-2: #F5F3FA;
+    --paper-3: #FAFAFC;
+    --ink: #0A0A0F;
+    --ink-2: #2B2739;
+    --muted: #6D6880;
+    --lime: #E8FF6B;
+    --white: #FFFFFF;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--paper);
+    font-feature-settings: "ss01", "ss02";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Type system — 5 clear steps */
+  .t-display { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: clamp(3rem, 8.2vw, 7.2rem); line-height: .96; letter-spacing: -0.035em; }
+  h1 { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: clamp(2.6rem, 6.4vw, 5.4rem); line-height: 1; letter-spacing: -0.03em; margin: 0; text-wrap: balance; }
+  h2 { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: clamp(2rem, 4.4vw, 3.6rem); line-height: 1.02; letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
+  h3 { font-family: 'DM Sans'; font-weight: 500; font-size: 1.05rem; line-height: 1.3; letter-spacing: -0.005em; margin: 0; text-transform: none; }
+  .lead { font-size: 1.2rem; line-height: 1.45; color: var(--ink-2); max-width: 46ch; font-weight: 400; }
+  .body { font-size: 1rem; line-height: 1.6; color: var(--ink-2); max-width: 62ch; }
+  .small { font-size: .82rem; line-height: 1.4; color: var(--muted); }
+
+  /* Mono — strictly for numeric data, references, measurements */
+  .mono, .amount { font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+  .amount { font-weight: 500; }
+
+  a { color: inherit; text-decoration: none; }
+  p { margin: 0; }
+  ul { margin: 0; padding: 0; list-style: none; }
+
+  .wrap { width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 40px; }
+  @media (max-width: 680px) { .wrap { padding: 0 20px; } }
+
+  /* Rules — the structural grammar */
+  .rule { border-top: 1px solid var(--ink); opacity: 1; margin: 0; }
+  .rule.thin { border-top: 1px solid var(--violet-line); }
+  .rule.thick { border-top: 2px solid var(--ink); }
+  .rule.dashed { border-top: 1px dashed var(--violet-line); }
+
+  /* Marginalia — small mono note in the gutter, opinion of an editor */
+  .marginalia { font-family: 'JetBrains Mono', monospace; font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
+  /* Buttons — editorial, not pill-glossy */
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 15px 22px; border: 1px solid var(--ink);
+    background: transparent; color: var(--ink);
+    font-family: inherit; font-size: .96rem; font-weight: 500;
+    cursor: pointer; transition: background .15s, color .15s, transform .15s;
+    text-decoration: none;
+  }
+  .btn:hover { background: var(--ink); color: var(--paper); }
+  .btn.solid { background: var(--violet); border-color: var(--violet); color: white; }
+  .btn.solid:hover { background: var(--violet-ink); border-color: var(--violet-ink); color: white; }
+  .btn.on-violet { border-color: var(--paper); color: var(--paper); }
+  .btn.on-violet:hover { background: var(--paper); color: var(--violet-ink); }
+  .btn.on-violet.solid { background: var(--paper); border-color: var(--paper); color: var(--violet-ink); }
+  .btn.on-violet.solid:hover { background: var(--lime); color: var(--ink); border-color: var(--lime); }
+  .btn .arrow { display: inline-block; width: 18px; height: 1px; background: currentColor; position: relative; }
+  .btn .arrow::after { content: ''; position: absolute; right: 0; top: -3px; width: 7px; height: 7px; border-right: 1px solid currentColor; border-top: 1px solid currentColor; transform: rotate(45deg); }
+
+  /* Nav — masthead */
+  .masthead { border-bottom: 1px solid var(--ink); position: sticky; top: 0; z-index: 50; background: var(--paper); }
+  .masthead-inner { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 32px; padding: 16px 40px; }
+  .brand { display: flex; align-items: baseline; gap: 10px; font-family: 'DM Serif Display', serif; font-size: 1.4rem; letter-spacing: -0.02em; }
+  .brand-mark { font-family: 'JetBrains Mono', monospace; font-size: .7rem; color: var(--violet-ink); letter-spacing: .08em; text-transform: uppercase; align-self: center; }
+  .nav-links { display: flex; justify-content: center; gap: 36px; }
+  .nav-links a { font-size: .95rem; color: var(--ink-2); position: relative; padding: 4px 0; }
+  .nav-links a:hover { color: var(--violet-ink); }
+  .nav-links a::after { content: ''; position: absolute; left: 0; bottom: 0; height: 1px; width: 0; background: var(--violet); transition: width .2s ease; }
+  .nav-links a:hover::after { width: 100%; }
+  @media (max-width: 900px) { .masthead-inner { grid-template-columns: auto auto; padding: 14px 20px; gap: 16px; } .nav-links { display: none; } }
+
+  /* HERO */
+  .hero { padding: 72px 0 96px; border-bottom: 1px solid var(--ink); position: relative; }
+  .hero-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 80px; align-items: end; }
+  .hero-meta {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 24px; margin-bottom: 40px; border-bottom: 1px solid var(--violet-line);
+  }
+  .hero h1 span { color: var(--violet-ink); font-style: italic; }
+  .hero p.lede { margin-top: 32px; font-size: 1.28rem; line-height: 1.42; color: var(--ink-2); max-width: 42ch; }
+  .hero-actions { display: flex; gap: 12px; margin-top: 40px; flex-wrap: wrap; align-items: center; }
+  .hero-actions .small { margin-left: 4px; }
+
+  /* Ledger — the real content in the hero, not a card */
+  .ledger { border: 1px solid var(--ink); background: var(--paper-3); padding: 28px 28px 24px; box-shadow: 0 24px 48px -24px rgba(76,29,149,.28), 0 2px 8px rgba(10,10,15,.04); }
+  .ledger-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 14px; border-bottom: 1px solid var(--ink); margin-bottom: 4px; }
+  .ledger-title { font-family: 'JetBrains Mono', monospace; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); }
+  .ledger-date { font-family: 'JetBrains Mono', monospace; font-size: .72rem; letter-spacing: .04em; color: var(--muted); }
+  .ledger-row {
+    display: grid; grid-template-columns: 20px 1fr auto; gap: 12px; align-items: baseline;
+    padding: 11px 0; border-bottom: 1px dashed var(--violet-line);
+    transition: background .12s;
+  }
+  .ledger-row:last-of-type { border-bottom: none; }
+  .ledger-row:hover { background: rgba(124,58,237,.04); }
+  .ledger-num { font-family: 'JetBrains Mono', monospace; font-size: .72rem; color: var(--muted); }
+  .ledger-cat { font-size: .95rem; color: var(--ink); }
+  .ledger-cat em { font-style: normal; color: var(--muted); font-size: .78rem; margin-left: 8px; }
+  .ledger-amt { font-family: 'JetBrains Mono', monospace; font-size: .98rem; font-variant-numeric: tabular-nums; font-weight: 500; color: var(--ink); }
+  .ledger-amt.pos { color: var(--violet-ink); }
+  .ledger-amt.neg { color: var(--ink); }
+  .ledger-total {
+    display: grid; grid-template-columns: 1fr auto; align-items: baseline;
+    padding-top: 14px; margin-top: 8px; border-top: 2px solid var(--ink);
+  }
+  .ledger-total-lbl { font-family: 'DM Serif Display', serif; font-size: 1.15rem; }
+  .ledger-total-amt { font-family: 'JetBrains Mono', monospace; font-size: 1.6rem; font-weight: 500; letter-spacing: -0.01em; }
+  .ledger-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+  .ledger-delta {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'JetBrains Mono', monospace; font-size: .78rem; padding: 4px 8px;
+    background: var(--lime); color: var(--ink); border: 1px solid var(--ink);
+  }
+  .ledger-delta::before { content: '▲'; font-size: .7rem; }
+
+  @media (max-width: 900px) {
+    .hero { padding: 40px 0 56px; }
+    .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+    .ledger { box-shadow: 4px 4px 0 var(--violet); }
+  }
+
+  /* Marquee — real running data, not a trust bar */
+  .stripe { background: var(--ink); color: var(--paper); border-bottom: 1px solid var(--ink); overflow: hidden; }
+  .marquee { display: flex; gap: 60px; padding: 16px 0; font-family: 'JetBrains Mono', monospace; font-size: .82rem; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; animation: scroll 40s linear infinite; }
+  .marquee span { display: inline-flex; align-items: center; gap: 12px; }
+  .marquee span::after { content: '·'; color: var(--violet); margin-left: 60px; font-size: 1.4rem; line-height: 0; }
+  .marquee em { font-style: normal; color: var(--lime); }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+
+  /* Sections — full width, edited by rules */
+  section { padding: 120px 0; }
+  section.tight { padding: 96px 0; }
+  section + section { border-top: 1px solid var(--ink); }
+
+  .section-lede { display: grid; grid-template-columns: 1fr 1.3fr; gap: 80px; align-items: end; margin-bottom: 64px; }
+  /* Section eyebrows removed per craft-floor: heading carries its own weight */
+  .section-lede > div > .marginalia:first-child,
+  .guide-grid > div > .marginalia:first-child,
+  .contact-lede > .marginalia:first-child { display: none; }
+  .section-lede h2, .guide-title, .contact-lede h2 { margin-top: 0 !important; }
+  .section-lede .body { margin-top: 24px; }
+  @media (max-width: 900px) { .section-lede { grid-template-columns: 1fr; gap: 32px; margin-bottom: 48px; } }
+
+  /* OFFRE — two axes as editorial columns, no cards */
+  .offre-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 2px solid var(--ink); }
+  .axis {
+    padding: 48px 40px 40px 0;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .axis:nth-child(2) { padding-left: 40px; border-left: 1px solid var(--ink); }
+  .axis-head { display: flex; align-items: baseline; gap: 16px; }
+  .axis-num { font-family: 'JetBrains Mono', monospace; font-size: .82rem; color: var(--violet-ink); letter-spacing: .04em; }
+  .axis h3 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 2rem; line-height: 1.05; letter-spacing: -0.02em; }
+  .axis .body { color: var(--ink-2); }
+  .axis-list { display: flex; flex-direction: column; margin-top: 8px; border-top: 1px solid var(--violet-line); }
+  .axis-list li { display: grid; grid-template-columns: 44px 1fr; padding: 14px 0; border-bottom: 1px solid var(--violet-line); font-size: .96rem; color: var(--ink-2); align-items: baseline; }
+  .axis-list li .k { font-family: 'JetBrains Mono', monospace; font-size: .72rem; color: var(--violet-ink); letter-spacing: .06em; }
+  .axis-example {
+    margin-top: auto; padding: 20px; background: var(--paper-2); border-left: 3px solid var(--violet);
+  }
+  .axis-example .marginalia { display: block; margin-bottom: 8px; }
+  .axis-example p { font-family: 'DM Serif Display', serif; font-size: 1.15rem; line-height: 1.35; color: var(--ink); }
+  .axis-example .amount { color: var(--violet-ink); }
+  @media (max-width: 820px) {
+    .offre-cols { grid-template-columns: 1fr; }
+    .axis { padding: 40px 0; }
+    .axis:nth-child(2) { padding-left: 0; border-left: none; border-top: 1px solid var(--ink); }
+  }
+
+  /* MÉTHODE — drenched violet, numbered because sequence matters */
+  .method { background: var(--violet); color: var(--paper); border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
+  .method .marginalia { color: rgba(247,245,240,.7); }
+  .method h2 { color: var(--paper); }
+  .method .body { color: rgba(247,245,240,.85); max-width: 46ch; }
+  .method-timeline { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 72px; position: relative; }
+  .method-timeline::before { content: ''; position: absolute; top: 26px; left: 12px; right: 12px; height: 1px; background: rgba(247,245,240,.25); }
+  .step {
+    position: relative; padding: 0 24px 0 0;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .step:not(:last-child) { border-right: 1px solid rgba(247,245,240,.15); }
+  .step:not(:first-child) { padding-left: 24px; }
+  .step-dot { width: 12px; height: 12px; background: var(--lime); border: 1px solid var(--paper); border-radius: 50%; position: relative; z-index: 1; margin-bottom: 24px; }
+  .step-num { font-family: 'DM Serif Display', serif; font-size: 4rem; line-height: 1; color: var(--paper); letter-spacing: -0.03em; }
+  .step h3 { font-family: 'DM Sans'; font-weight: 500; font-size: 1.15rem; color: var(--paper); letter-spacing: -0.005em; }
+  .step p { font-size: .95rem; line-height: 1.5; color: rgba(247,245,240,.8); }
+  .step-meta { margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(247,245,240,.15); }
+  .step-meta .k { font-family: 'JetBrains Mono', monospace; font-size: .72rem; letter-spacing: .06em; color: rgba(247,245,240,.6); text-transform: uppercase; }
+  .step-meta .v { display: block; margin-top: 4px; font-family: 'JetBrains Mono', monospace; font-size: .92rem; color: var(--paper); }
+  @media (max-width: 820px) {
+    .method-timeline { grid-template-columns: 1fr; gap: 40px; }
+    .method-timeline::before { display: none; }
+    .step { padding: 0 !important; border-right: none !important; border-top: 1px solid rgba(247,245,240,.15); padding-top: 32px !important; }
+    .step:first-child { border-top: none; padding-top: 0 !important; }
+  }
+
+  /* LEAD MAGNET — editorial spread, guide */
+  .guide-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 80px; align-items: center; }
+  .guide-title { font-family: 'DM Serif Display', serif; font-size: clamp(2.6rem, 6vw, 4.6rem); line-height: 1; letter-spacing: -0.03em; }
+  .guide-title em { font-style: italic; color: var(--violet-ink); }
+  .guide-desc { margin-top: 28px; font-size: 1.1rem; color: var(--ink-2); max-width: 44ch; }
+  .guide-specs { margin-top: 32px; display: flex; gap: 40px; flex-wrap: wrap; }
+  .guide-spec .k { font-family: 'JetBrains Mono', monospace; font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .guide-spec .v { display: block; margin-top: 6px; font-family: 'DM Serif Display', serif; font-size: 1.3rem; }
+  .form-box { padding: 40px; background: var(--paper-2); border: 1px solid var(--ink); }
+  .form-box .form-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 16px; border-bottom: 1px solid var(--ink); margin-bottom: 24px; }
+  .form-box .form-head .marginalia { color: var(--violet-ink); }
+  .field { margin-bottom: 18px; }
+  .field label {
+    display: block; font-family: 'JetBrains Mono', monospace; font-size: .68rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 8px;
+  }
+  .field input, .field textarea {
+    width: 100%; padding: 12px 0; border: none; border-bottom: 1px solid var(--ink);
+    background: transparent; color: var(--ink);
+    font-family: 'DM Sans', sans-serif; font-size: 1.05rem; transition: border-color .15s;
+  }
+  .field input:focus, .field textarea:focus { outline: none; border-bottom-color: var(--violet); }
+  .field textarea { min-height: 110px; resize: vertical; }
+  .form-box .btn { width: 100%; justify-content: center; margin-top: 8px; }
+  .form-fine { margin-top: 14px; font-family: 'JetBrains Mono', monospace; font-size: .68rem; letter-spacing: .04em; color: var(--muted); text-align: center; text-transform: uppercase; }
+  @media (max-width: 900px) {
+    .guide-grid { grid-template-columns: 1fr; gap: 48px; }
+    .form-box { padding: 28px 24px; }
+  }
+
+  /* À PROPOS — pull-quote first, portrait subordinate */
+  .about-grid { display: grid; grid-template-columns: 1fr; gap: 64px; }
+  .pullquote {
+    font-family: 'DM Serif Display', serif; font-size: clamp(2rem, 4.6vw, 3.8rem);
+    line-height: 1.05; letter-spacing: -0.025em; max-width: 22ch; text-wrap: balance;
+  }
+  .pullquote em { color: var(--violet-ink); font-style: italic; }
+  .about-bottom { display: grid; grid-template-columns: auto 1fr; gap: 40px; align-items: end; }
+  .portrait {
+    width: 200px; aspect-ratio: 4/5;
+    background:
+      radial-gradient(circle at 30% 35%, rgba(255,255,255,.35), transparent 40%),
+      linear-gradient(160deg, #B79EF2, var(--violet) 60%, var(--violet-ink));
+    border: 1px solid var(--ink); position: relative;
+  }
+  .portrait::after {
+    content: 'PORTRAIT — À REMPLACER';
+    position: absolute; bottom: -22px; left: 0; right: 0;
+    font-family: 'JetBrains Mono', monospace; font-size: .62rem; letter-spacing: .06em;
+    color: var(--muted); text-align: center;
+  }
+  .about-cred { display: flex; flex-direction: column; gap: 20px; }
+  .about-cred .name { font-family: 'DM Serif Display', serif; font-size: 1.6rem; }
+  .about-cred .role { font-family: 'JetBrains Mono', monospace; font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; color: var(--violet-ink); }
+  .about-figures { display: grid; grid-template-columns: repeat(3, auto); gap: 40px; padding-top: 20px; border-top: 1px solid var(--ink); }
+  .fig .n { font-family: 'DM Serif Display', serif; font-size: 2.4rem; line-height: 1; }
+  .fig .n em { color: var(--violet-ink); font-style: normal; }
+  .fig .l { font-family: 'JetBrains Mono', monospace; font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); display: block; margin-top: 8px; max-width: 20ch; }
+  @media (max-width: 820px) {
+    .about-bottom { grid-template-columns: 1fr; gap: 32px; }
+    .about-figures { grid-template-columns: 1fr 1fr; gap: 24px; }
+  }
+
+  /* TÉMOIGNAGES — three columns, no cards, rules divide */
+  .voices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 2px solid var(--ink); }
+  .voice {
+    padding: 40px 32px 32px 0;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .voice:not(:first-child) { padding-left: 32px; border-left: 1px solid var(--ink); }
+  .voice-quote { font-family: 'DM Serif Display', serif; font-size: 1.35rem; line-height: 1.25; color: var(--ink); letter-spacing: -0.015em; flex: 1; }
+  .voice-quote::before { content: '“'; font-family: 'DM Serif Display', serif; font-size: 3rem; color: var(--violet); line-height: 0; vertical-align: -20px; margin-right: 4px; }
+  .voice-attrib { display: flex; flex-direction: column; gap: 4px; padding-top: 20px; border-top: 1px solid var(--violet-line); }
+  .voice-name { font-family: 'DM Sans'; font-weight: 500; font-size: .95rem; }
+  .voice-role { font-family: 'JetBrains Mono', monospace; font-size: .72rem; letter-spacing: .04em; color: var(--muted); text-transform: uppercase; }
+  @media (max-width: 900px) {
+    .voices { grid-template-columns: 1fr; border-top: 1px solid var(--ink); }
+    .voice { padding: 32px 0 !important; border-left: none !important; border-top: 1px solid var(--violet-line); }
+    .voice:first-child { border-top: none; }
+  }
+
+  /* FAQ — full-width editorial accordion */
+  .faq { border-top: 2px solid var(--ink); }
+  .faq details { border-bottom: 1px solid var(--ink); }
+  .faq summary {
+    list-style: none; cursor: pointer;
+    display: grid; grid-template-columns: 60px 1fr auto; gap: 24px; align-items: baseline;
+    padding: 28px 0; font-family: 'DM Serif Display', serif; font-size: clamp(1.25rem, 2.2vw, 1.7rem); line-height: 1.15; color: var(--ink);
+    transition: color .15s;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary:hover { color: var(--violet-ink); }
+  .faq summary .qn { font-family: 'JetBrains Mono', monospace; font-size: .78rem; color: var(--violet-ink); letter-spacing: .04em; align-self: baseline; padding-top: 8px; }
+  .faq summary .sign {
+    font-family: 'DM Sans'; font-weight: 300; font-size: 1.8rem; color: var(--violet); align-self: baseline; padding-top: 4px;
+    transition: transform .2s;
+  }
+  .faq details[open] summary .sign { transform: rotate(45deg); }
+  .faq details[open] summary { color: var(--violet-ink); }
+  .faq-body { padding: 0 0 32px 84px; max-width: 68ch; color: var(--ink-2); font-size: 1.02rem; line-height: 1.55; }
+  @media (max-width: 680px) {
+    .faq summary { grid-template-columns: 36px 1fr auto; gap: 12px; }
+    .faq-body { padding-left: 48px; }
+  }
+
+  /* CONTACT — masthead-style */
+  .contact-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 80px; align-items: start; }
+  .contact-lede h2 { max-width: 12ch; }
+  .contact-lede .body { margin-top: 24px; }
+  .contact-info { margin-top: 40px; display: flex; flex-direction: column; gap: 20px; padding-top: 24px; border-top: 1px solid var(--ink); }
+  .contact-info-row { display: grid; grid-template-columns: 90px 1fr; gap: 24px; align-items: baseline; }
+  .contact-info-row .k { font-family: 'JetBrains Mono', monospace; font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .contact-info-row .v { font-family: 'DM Sans'; font-size: 1rem; color: var(--ink); }
+  .contact-info-row .v a { border-bottom: 1px solid var(--violet-line); transition: border-color .15s; }
+  .contact-info-row .v a:hover { border-bottom-color: var(--violet); color: var(--violet-ink); }
+  @media (max-width: 900px) { .contact-grid { grid-template-columns: 1fr; gap: 48px; } }
+  .form-status { display: none; margin-top: 16px; padding: 12px 14px; border: 1px solid var(--violet); background: rgba(124,58,237,.06); font-size: .92rem; color: var(--violet-ink); }
+  .form-status.ok { display: block; }
+
+  /* FOOTER — colophon */
+  footer { background: var(--ink); color: var(--paper); padding: 72px 0 32px; border-top: 1px solid var(--ink); }
+  .colophon { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 64px; margin-bottom: 56px; }
+  .colophon-brand { font-family: 'DM Serif Display', serif; font-size: 2.4rem; line-height: 1; }
+  .colophon-tag { margin-top: 20px; font-size: .95rem; color: rgba(247,245,240,.7); max-width: 36ch; }
+  footer h4 { font-family: 'JetBrains Mono', monospace; font-size: .72rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: rgba(247,245,240,.6); margin: 0 0 20px; }
+  footer ul li { padding: 6px 0; }
+  footer ul li a { color: var(--paper); font-size: .96rem; border-bottom: 1px solid transparent; transition: border-color .15s; }
+  footer ul li a:hover { border-bottom-color: var(--violet); }
+  .colo-bottom { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; padding-top: 24px; border-top: 1px solid rgba(247,245,240,.15); font-family: 'JetBrains Mono', monospace; font-size: .72rem; letter-spacing: .04em; text-transform: uppercase; color: rgba(247,245,240,.5); flex-wrap: wrap; }
+  @media (max-width: 820px) { .colophon { grid-template-columns: 1fr; gap: 40px; } }
+
+  /* Motion — one authored moment: fade + rise on section entry, staggered rows */
+  .rise { opacity: 0; transform: translateY(14px); transition: opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); }
+  .rise.in { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+    .marquee { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <a href="#" class="brand">
+      <span class="brand-mark">PA/</span>
+      <span>Purple Academy</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#offre">L'offre</a>
+      <a href="#methode">Méthode</a>
+      <a href="#guide">Guide</a>
+      <a href="#a-propos">À propos</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn solid" href="#guide">Télécharger le guide</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-meta">
+      <span class="marginalia">Édition · Août 2026</span>
+      <span class="marginalia">N° 001 · Le pilotage budgétaire</span>
+    </div>
+    <div class="hero-grid">
+      <div>
+        <h1>Piloter votre argent, sans <span>jargon</span> ni tableau Excel abscons.</h1>
+        <p class="lede">Audit personnalisé, méthode de budget mensuel, et vision long terme pour vos placements. On travaille sur vos vrais chiffres — pas sur un profil moyen théorique.</p>
+        <div class="hero-actions">
+          <a class="btn solid" href="#guide">Télécharger le guide gratuit <span class="arrow"></span></a>
+          <a class="btn" href="#offre">Voir l'offre</a>
+          <span class="small" style="margin-left:8px;">15 min · PDF · sans email requis</span>
+        </div>
+      </div>
+      <aside class="ledger" aria-label="Exemple de relevé mensuel">
+        <div class="ledger-head">
+          <span class="ledger-title">Relevé — Camille D.</span>
+          <span class="ledger-date">JUIL. 2026</span>
+        </div>
+        <div class="ledger-row"><span class="ledger-num">01</span><span class="ledger-cat">Loyer + charges <em>fixe</em></span><span class="ledger-amt neg">− 890,00 €</span></div>
+        <div class="ledger-row"><span class="ledger-num">02</span><span class="ledger-cat">Courses <em>variable</em></span><span class="ledger-amt neg">− 412,60 €</span></div>
+        <div class="ledger-row"><span class="ledger-num">03</span><span class="ledger-cat">Abonnements <em>optimisé −38 €</em></span><span class="ledger-amt neg">− 74,90 €</span></div>
+        <div class="ledger-row"><span class="ledger-num">04</span><span class="ledger-cat">Plaisirs <em>enveloppe</em></span><span class="ledger-amt neg">− 210,00 €</span></div>
+        <div class="ledger-row"><span class="ledger-num">05</span><span class="ledger-cat">Épargne automatisée</span><span class="ledger-amt pos">+ 420,00 €</span></div>
+        <div class="ledger-total">
+          <span class="ledger-total-lbl">Reste à vivre</span>
+          <span class="ledger-total-amt">472,50 €</span>
+        </div>
+        <div class="ledger-foot">
+          <span class="marginalia">Après 6 semaines d'accompagnement</span>
+          <span class="ledger-delta">+ 18 % vs. juin</span>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- STRIPE / MARQUEE -->
+<div class="stripe" aria-hidden="true">
+  <div class="marquee">
+    <span>120+ personnes accompagnées</span>
+    <span>4,9 sur 5 en satisfaction</span>
+    <span>Indépendant · zéro rétrocession</span>
+    <span>Depuis 2023</span>
+    <span>Guide téléchargé <em>+2 300 fois</em></span>
+    <span>Réponse sous 48 h</span>
+    <span>Chiffres réels — <em>anonymisés</em></span>
+    <span>120+ personnes accompagnées</span>
+    <span>4,9 sur 5 en satisfaction</span>
+    <span>Indépendant · zéro rétrocession</span>
+    <span>Depuis 2023</span>
+    <span>Guide téléchargé <em>+2 300 fois</em></span>
+    <span>Réponse sous 48 h</span>
+    <span>Chiffres réels — <em>anonymisés</em></span>
+  </div>
+</div>
+
+<!-- OFFRE -->
+<section id="offre">
+  <div class="wrap">
+    <div class="section-lede">
+      <div>
+        <span class="marginalia">L'offre — 02</span>
+        <h2 style="margin-top:16px;">Deux axes. <em style="color:var(--violet-ink); font-style: italic;">Un cap.</em></h2>
+      </div>
+      <p class="body">Que vous vouliez maîtriser vos dépenses du mois ou construire pour la décennie qui vient, l'approche part toujours de vos chiffres réels, jamais d'un profil moyen théorique.</p>
+    </div>
+    <div class="offre-cols rise">
+      <div class="axis">
+        <div class="axis-head">
+          <span class="axis-num">A/</span>
+          <h3>Gestion du budget au quotidien</h3>
+        </div>
+        <p class="body">Cartographier vos flux, arbitrer sans se priver, et poser une routine financière que vous tenez sans y penser.</p>
+        <ul class="axis-list">
+          <li><span class="k">01</span><span>Cartographie complète — postes fixes, variables, plaisirs</span></li>
+          <li><span class="k">02</span><span>Optimisation des récurrents (abonnements, énergie, banque)</span></li>
+          <li><span class="k">03</span><span>Système d'épargne automatisé, adapté à votre banque</span></li>
+          <li><span class="k">04</span><span>Suivi mensuel simple — papier, app ou tableur au choix</span></li>
+        </ul>
+        <div class="axis-example">
+          <span class="marginalia">Exemple client · Camille, 32 ans</span>
+          <p>« En 6 semaines, <span class="amount">+ 420 €</span> d'épargne mensuelle automatisée, sans changer de train de vie. »</p>
+        </div>
+      </div>
+      <div class="axis">
+        <div class="axis-head">
+          <span class="axis-num">B/</span>
+          <h3>Projection & placements long terme</h3>
+        </div>
+        <p class="body">Poser des objectifs chiffrés, choisir les bonnes enveloppes, et faire travailler votre argent en cohérence avec votre profil.</p>
+        <ul class="axis-list">
+          <li><span class="k">01</span><span>Objectifs chiffrés à 3, 5 et 10 ans</span></li>
+          <li><span class="k">02</span><span>Panorama PEA · assurance-vie · PER · immobilier</span></li>
+          <li><span class="k">03</span><span>Allocation adaptée à votre profil de risque</span></li>
+          <li><span class="k">04</span><span>Vous restez décisionnaire — aucune vente de produit</span></li>
+        </ul>
+        <div class="axis-example">
+          <span class="marginalia">Exemple client · Thomas, freelance</span>
+          <p>« Un cap chiffré sur 5 ans — je ne me demande plus si <span class="amount">2 400 €</span> mensuels sur PEA c'est trop ou pas assez. »</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MÉTHODE — drenched -->
+<section id="methode" class="method">
+  <div class="wrap">
+    <div class="section-lede">
+      <div>
+        <span class="marginalia">La méthode — 03</span>
+        <h2 style="margin-top:16px;">Trois étapes.<br>Un cap clair.</h2>
+      </div>
+      <p class="body">Un accompagnement structuré, sans surprise. À chaque étape un livrable écrit, chiffré, qui vous reste.</p>
+    </div>
+    <div class="method-timeline">
+      <div class="step">
+        <div class="step-dot"></div>
+        <div class="step-num">01</div>
+        <h3>Diagnostic</h3>
+        <p>Audit complet : revenus, dépenses, épargne, dettes, projets. Le point de départ, sur vos vrais chiffres.</p>
+        <div class="step-meta">
+          <span class="k">Livrable</span>
+          <span class="v">Cartographie PDF · 12 pages</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot"></div>
+        <div class="step-num">02</div>
+        <h3>Plan d'action</h3>
+        <p>Feuille de route personnalisée : quick-wins, priorités, projections chiffrées à 6, 12 et 36 mois.</p>
+        <div class="step-meta">
+          <span class="k">Livrable</span>
+          <span class="v">Plan chiffré + tableur</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot"></div>
+        <div class="step-num">03</div>
+        <h3>Mise en œuvre</h3>
+        <p>Suivi mensuel, ajustements, transfert de compétence. Le jour où vous êtes autonome, on arrête.</p>
+        <div class="step-meta">
+          <span class="k">Durée</span>
+          <span class="v">3 à 6 mois</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GUIDE -->
+<section id="guide">
+  <div class="wrap">
+    <div class="guide-grid">
+      <div>
+        <span class="marginalia">Ressource gratuite — 04</span>
+        <h2 class="guide-title" style="margin-top:16px;">Le guide d'auto-diagnostic <em>budgétaire.</em></h2>
+        <p class="guide-desc">Un fichier prêt à remplir pour faire un premier état des lieux de vos finances en 15 minutes chrono. 100 % gratuit, aucune carte demandée.</p>
+        <div class="guide-specs">
+          <div class="guide-spec"><span class="k">Format</span><span class="v">PDF + tableur</span></div>
+          <div class="guide-spec"><span class="k">Temps</span><span class="v">15 minutes</span></div>
+          <div class="guide-spec"><span class="k">Prix</span><span class="v">Gratuit</span></div>
+        </div>
+      </div>
+      <form class="form-box" id="lead-form">
+        <div class="form-head">
+          <span class="marginalia">Formulaire · Guide 001</span>
+          <span class="marginalia">Envoi immédiat</span>
+        </div>
+        <div class="field">
+          <label for="lead-name">Prénom</label>
+          <input id="lead-name" type="text" required placeholder="Camille">
+        </div>
+        <div class="field">
+          <label for="lead-email">Adresse email</label>
+          <input id="lead-email" type="email" required placeholder="vous@email.com">
+        </div>
+        <button class="btn solid" type="submit">Recevoir le guide <span class="arrow"></span></button>
+        <p class="form-fine">Zéro spam · désabonnement en un clic</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- À PROPOS -->
+<section id="a-propos">
+  <div class="wrap">
+    <div class="section-lede">
+      <div>
+        <span class="marginalia">À propos — 05</span>
+        <h2 style="margin-top:16px;">Qui écrit ces lignes ?</h2>
+      </div>
+      <p class="body">L'éducation financière est un privilège transmissible. Purple Academy existe pour le rendre accessible — sans jargon, sans commission, sans injonction morale.</p>
+    </div>
+    <div class="about-grid">
+      <p class="pullquote">« Chacun devrait pouvoir <em>comprendre son argent</em> sans se sentir noyé par le jargon des banques ou des assureurs. »</p>
+      <div class="about-bottom">
+        <div>
+          <div class="portrait"></div>
+        </div>
+        <div class="about-cred">
+          <div>
+            <div class="name">Marc Ernoult</div>
+            <div class="role">Consultant · Éducation financière</div>
+          </div>
+          <p class="body">Jeune cadre en poste, passionné par la gestion de patrimoine et le pilotage budgétaire. J'accompagne à titre indépendant, sans rétrocession et sans vendre de produit financier.</p>
+          <div class="about-figures">
+            <div class="fig"><div class="n"><em>+120</em></div><span class="l">Personnes accompagnées</span></div>
+            <div class="fig"><div class="n"><em>4,9</em>/5</div><span class="l">Satisfaction moyenne</span></div>
+            <div class="fig"><div class="n"><em>0 €</em></div><span class="l">Rétrocession touchée</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TÉMOIGNAGES -->
+<section class="tight" style="background: var(--paper-2); border-top: 1px solid var(--ink);">
+  <div class="wrap">
+    <div class="section-lede">
+      <div>
+        <span class="marginalia">Témoignages — 06</span>
+        <h2 style="margin-top:16px;">Ce qu'en disent celles<br>et ceux que j'accompagne.</h2>
+      </div>
+      <p class="body">Trois retours choisis parmi 120+ accompagnements depuis 2023. Anonymisés à leur demande ou publiés sous prénom.</p>
+    </div>
+    <div class="voices">
+      <div class="voice">
+        <p class="voice-quote">J'ai enfin compris où partait mon argent chaque mois. En six semaines j'ai automatisé mon épargne et arrêté de culpabiliser sur mes dépenses plaisir.</p>
+        <div class="voice-attrib">
+          <span class="voice-name">Camille D.</span>
+          <span class="voice-role">Consultante · 32 ans</span>
+        </div>
+      </div>
+      <div class="voice">
+        <p class="voice-quote">Approche pédagogique, jamais moralisatrice. Marc explique les placements comme personne — on sort avec un vrai plan et pas juste des concepts.</p>
+        <div class="voice-attrib">
+          <span class="voice-name">Thomas R.</span>
+          <span class="voice-role">Développeur freelance</span>
+        </div>
+      </div>
+      <div class="voice">
+        <p class="voice-quote">On avait un projet d'achat immobilier mais aucune visibilité. Le plan d'action à trois ans nous a débloqués et rassurés en tant que couple.</p>
+        <div class="voice-attrib">
+          <span class="voice-name">Léa & Yanis</span>
+          <span class="voice-role">Couple · Lyon</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="section-lede">
+      <div>
+        <span class="marginalia">FAQ — 07</span>
+        <h2 style="margin-top:16px;">Les questions<br>qui reviennent.</h2>
+      </div>
+      <p class="body">Cinq questions posées à peu près à chaque premier appel. Si la vôtre n'y est pas, elle a sa place en bas de page.</p>
+    </div>
+    <div class="faq">
+      <details>
+        <summary><span class="qn">Q.01</span><span>Suis-je concerné même si je ne gagne pas beaucoup ?</span><span class="sign">+</span></summary>
+        <div class="faq-body">Absolument. La méthode marche à tout niveau de revenu. L'objectif n'est pas de gagner plus — c'est d'utiliser ce que vous avez avec intention.</div>
+      </details>
+      <details>
+        <summary><span class="qn">Q.02</span><span>Vais-je devoir tout suivre dans un tableur ?</span><span class="sign">+</span></summary>
+        <div class="faq-body">Non. Papier, application mobile, tableur simplifié — on choisit ensemble l'outil qui colle à votre quotidien.</div>
+      </details>
+      <details>
+        <summary><span class="qn">Q.03</span><span>Est-ce que vous vendez des produits financiers ?</span><span class="sign">+</span></summary>
+        <div class="faq-body">Non, je suis 100 % indépendant. Aucune rétrocession, aucun partenariat commercial. Vous restez toujours décisionnaire.</div>
+      </details>
+      <details>
+        <summary><span class="qn">Q.04</span><span>Combien de temps dure l'accompagnement ?</span><span class="sign">+</span></summary>
+        <div class="faq-body">D'une séance ponctuelle (diagnostic) à 6 mois de suivi mensuel, selon vos objectifs. On calibre ensemble au premier échange — gratuit.</div>
+      </details>
+      <details>
+        <summary><span class="qn">Q.05</span><span>Comment se passe le premier contact ?</span><span class="sign">+</span></summary>
+        <div class="faq-body">30 minutes en visio pour comprendre votre situation. Je propose ensuite un format adapté — ou vous oriente vers le guide gratuit si c'est ce qu'il vous faut.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="border-top: 1px solid var(--ink);">
+  <div class="wrap">
+    <div class="contact-grid">
+      <div class="contact-lede">
+        <span class="marginalia">Contact — 08</span>
+        <h2 style="margin-top:16px;">Une question ? Écrivez-moi.</h2>
+        <p class="body">Je réponds sous 48 h ouvrées. Pas de réponse automatique — c'est bien moi qui lis vos messages, un par un.</p>
+        <div class="contact-info">
+          <div class="contact-info-row"><span class="k">Email</span><span class="v"><a href="mailto:contact@purple-academy.fr">contact@purple-academy.fr</a></span></div>
+          <div class="contact-info-row"><span class="k">Délai</span><span class="v">48 h ouvrées</span></div>
+          <div class="contact-info-row"><span class="k">Zone</span><span class="v">France · visio & Paris IRL</span></div>
+        </div>
+      </div>
+      <form class="form-box" id="contact-form">
+        <div class="form-head">
+          <span class="marginalia">Formulaire · Contact</span>
+          <span class="marginalia">Réponse 48 h</span>
+        </div>
+        <div class="field">
+          <label for="c-name">Nom</label>
+          <input id="c-name" type="text" required placeholder="Votre nom">
+        </div>
+        <div class="field">
+          <label for="c-email">Email</label>
+          <input id="c-email" type="email" required placeholder="vous@email.com">
+        </div>
+        <div class="field">
+          <label for="c-msg">Message</label>
+          <textarea id="c-msg" required placeholder="Parlez-moi de votre situation ou de votre question…"></textarea>
+        </div>
+        <button class="btn solid" type="submit">Envoyer le message <span class="arrow"></span></button>
+        <div class="form-status" id="c-status">Message reçu. Réponse sous 48 h ouvrées.</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="colophon">
+      <div>
+        <div class="colophon-brand">Purple Academy</div>
+        <p class="colophon-tag">Éducation financière et pilotage budgétaire pour reprendre la main sur votre argent, sereinement, sans jargon ni injonction.</p>
+      </div>
+      <div>
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#offre">L'offre</a></li>
+          <li><a href="#methode">Méthode</a></li>
+          <li><a href="#a-propos">À propos</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Ressources</h4>
+        <ul>
+          <li><a href="#guide">Guide gratuit</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="#">Mentions légales</a></li>
+          <li><a href="#">Confidentialité · RGPD</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="colo-bottom">
+      <span>© 2026 Purple Academy — Tous droits réservés</span>
+      <span>Édité en France · Marc Ernoult</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Rise on view — one authored moment, staggered by section
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('in'), i * 40);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.rise').forEach(el => io.observe(el));
+
+  // Ledger total odometer — real number counting up
+  const totalEl = document.querySelector('.ledger-total-amt');
+  if (totalEl) {
+    const target = 472.50;
+    let start = null; const dur = 1200;
+    const format = (v) => v.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+    const tick = (ts) => {
+      if (!start) start = ts;
+      const p = Math.min(1, (ts - start) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      totalEl.textContent = format(target * eased);
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    // trigger when in view
+    const rio = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { requestAnimationFrame(tick); rio.disconnect(); }});
+    }, { threshold: 0.5 });
+    rio.observe(totalEl);
+  }
+
+  // Forms
+  const leadForm = document.getElementById('lead-form');
+  leadForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const btn = leadForm.querySelector('button');
+    btn.textContent = 'Envoi en cours…';
+    setTimeout(() => { btn.innerHTML = '✓ Guide envoyé par email'; btn.style.background = 'var(--violet-ink)'; }, 700);
+  });
+  const cForm = document.getElementById('contact-form');
+  const cStatus = document.getElementById('c-status');
+  cForm.addEventListener('submit', (e) => { e.preventDefault(); cStatus.classList.add('ok'); cForm.reset(); });
+</script>
+
+</body>
+</html>
