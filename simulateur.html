@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Simulateur de budget Purple Academy — confrontez vos revenus et vos charges en quelques minutes et recevez un plan d'action par poste de dépense.">
+<title>Simulateur de budget — Purple Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  .proto-banner { background: var(--violet-ink); color: white; text-align: center; padding: 10px 20px; font-size: .85rem; font-weight: 600; }
+  .proto-banner strong { font-weight: 800; }
+
+  .sim-header { padding: 56px 0 32px; }
+  .sim-header .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; font-weight: 700; letter-spacing: .02em; color: var(--violet-ink); background: var(--violet-soft); padding: 6px 14px; border-radius: 999px; margin-bottom: 18px; }
+  .sim-header h1 { max-width: 18ch; }
+  .sim-header p { max-width: 56ch; font-size: 1.08rem; margin-top: 14px; }
+  .sim-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .sim-meta span { display: inline-flex; align-items: center; gap: 8px; background: var(--white); border-radius: 999px; padding: 9px 15px; box-shadow: var(--shadow-sm); font-size: .82rem; font-weight: 600; color: var(--ink-2); }
+
+  .sim-layout { display: grid; grid-template-columns: 1.3fr 1fr; gap: 32px; align-items: start; padding-bottom: 64px; }
+  @media (max-width: 900px) { .sim-layout { grid-template-columns: 1fr; } }
+
+  .sim-card { background: var(--white); border-radius: var(--radius-xl); box-shadow: var(--shadow-md); padding: 32px; }
+  .sim-card + .sim-card { margin-top: 24px; }
+  .sim-card h2 { margin: 0 0 4px; font-size: 1.25rem; }
+  .sim-card .sub { color: var(--muted); font-size: .88rem; margin-bottom: 20px; }
+
+  .income-row .field input { font-size: 1.3rem; font-weight: 700; }
+
+  .cat-grid { display: grid; gap: 14px; }
+  .cat-block { border-radius: var(--radius-md); background: var(--cream); overflow: hidden; }
+  .cat-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; padding: 12px 14px; }
+  .cat-icon { width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--violet-soft); color: var(--violet-ink); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+  .cat-label { font-weight: 700; font-size: .95rem; }
+  .cat-hint { color: var(--muted); font-size: .78rem; font-weight: 500; margin-top: 1px; }
+  .cat-input { position: relative; }
+  .cat-input input {
+    width: 130px; padding: 10px 28px 10px 12px; text-align: right;
+    border: 1.5px solid var(--cream-2); border-radius: var(--radius-sm);
+    background: var(--white); font-family: inherit; font-size: 1rem; font-weight: 700; color: var(--ink);
+  }
+  .cat-input input:focus { outline: none; border-color: var(--violet); }
+  .cat-input input:disabled { background: var(--cream-2); color: var(--muted); }
+  .cat-input::after { content: '€'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-weight: 600; font-size: .85rem; pointer-events: none; }
+
+  .cat-toggle-row { padding: 0 14px 12px; margin-top: -4px; }
+  .detail-link { display: inline-flex; align-items: center; gap: 4px; background: none; border: none; padding: 0; font-family: inherit; font-size: .8rem; font-weight: 600; color: var(--violet-ink); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+  .detail-link:hover { color: var(--violet); }
+
+  .cat-detail-panel { margin: 0 14px 14px; padding: 16px; border-radius: var(--radius-md); background: var(--white); border: 1.5px dashed var(--violet-soft-2); }
+  .preset-note { font-size: .74rem; color: var(--muted); margin: 0 0 10px; }
+  .preset-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .chip { font-family: inherit; font-size: .8rem; font-weight: 600; padding: 7px 13px; border-radius: 999px; border: 1px solid var(--cream-2); background: var(--cream); color: var(--ink-2); cursor: pointer; }
+  .chip:hover { border-color: var(--violet-soft-2); background: var(--violet-soft); color: var(--violet-ink); }
+  .chip-custom { border-style: dashed; }
+
+  .item-row { display: grid; grid-template-columns: 1fr 100px auto; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .item-row input[type="text"] { padding: 9px 11px; border: 1.5px solid var(--cream-2); border-radius: var(--radius-sm); font-family: inherit; font-size: .88rem; background: var(--white); color: var(--ink); }
+  .item-row input[type="text"]:focus { outline: none; border-color: var(--violet); }
+  .item-row .cat-input input { width: 100px; }
+  .item-remove { width: 30px; height: 30px; border-radius: 999px; border: none; background: var(--cream); color: var(--muted); cursor: pointer; font-size: 1rem; line-height: 1; flex-shrink: 0; }
+  .item-remove:hover { background: rgba(185,28,28,.1); color: var(--error); }
+
+  .detail-subtotal { display: flex; justify-content: space-between; font-size: .82rem; font-weight: 700; color: var(--violet-ink); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--cream-2); }
+  .detail-empty { font-size: .82rem; color: var(--muted); margin-bottom: 10px; }
+
+  /* Results panel */
+  .results-panel { position: sticky; top: 96px; }
+  .rtv-figure { text-align: center; padding: 8px 0 4px; }
+  .rtv-label { font-size: .82rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+  .rtv-value { font-family: 'DM Sans', sans-serif; font-weight: 800; font-size: clamp(2.4rem, 5vw, 3.2rem); letter-spacing: -0.02em; margin: 6px 0; }
+  .rtv-value.pos { color: var(--violet-ink); }
+  .rtv-value.neg { color: var(--error); }
+  .rtv-sub { font-size: .85rem; color: var(--ink-2); }
+
+  .bar-track { height: 12px; border-radius: 999px; background: var(--cream-2); overflow: hidden; margin: 18px 0 8px; }
+  .bar-fill { width: 100%; height: 100%; background: var(--violet); border-radius: 999px; transform: scaleX(0); transform-origin: left; transition: transform .25s ease-out; }
+  .bar-legend { display: flex; justify-content: space-between; font-size: .78rem; color: var(--muted); font-weight: 600; }
+
+  .save-badge { margin-top: 20px; padding: 14px 16px; border-radius: var(--radius-sm); background: var(--violet-soft); text-align: center; }
+  .save-badge .k { font-size: .78rem; font-weight: 600; color: var(--violet-ink); }
+  .save-badge .v { font-size: 1.1rem; font-weight: 800; color: var(--violet-ink); margin-top: 2px; }
+  .save-badge.warn { background: rgba(185,28,28,.08); }
+  .save-badge.warn .k, .save-badge.warn .v { color: var(--error); }
+
+  .paywall { margin-top: 24px; padding: 22px; border-radius: var(--radius-lg); border: 1.5px dashed var(--violet-soft-2); background: var(--violet-soft); text-align: center; }
+  .paywall .price { font-weight: 800; font-size: 1.4rem; color: var(--violet-ink); }
+  .paywall p { font-size: .88rem; margin: 6px 0 14px; }
+  .paywall .btn { width: 100%; justify-content: center; }
+  .paywall .fine { font-size: .74rem; color: var(--muted); margin-top: 10px; margin-bottom: 0; }
+
+  /* Action plan cards */
+  .plan-list { display: grid; gap: 14px; }
+  .plan-card { border-radius: var(--radius-md); padding: 18px 20px; background: var(--cream); }
+  .plan-card.alert { background: rgba(185,28,28,.05); }
+  .plan-card.ok { background: var(--violet-soft); }
+  .plan-card .plan-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+  .plan-card .plan-title { font-weight: 700; font-size: .98rem; }
+  .plan-card .plan-pct { font-size: .8rem; font-weight: 700; color: var(--muted); white-space: nowrap; padding: 3px 10px; border-radius: 999px; background: var(--white); }
+  .plan-card.alert .plan-pct { color: var(--error); }
+  .plan-card p { margin: 0; font-size: .88rem; color: var(--ink-2); }
+  .plan-empty { color: var(--muted); font-size: .9rem; text-align: center; padding: 24px 0; }
+</style>
+</head>
+<body>
+
+<div class="proto-banner">🧪 <strong>Prototype</strong> — outil de démonstration, calcul 100 % local, aucune donnée saisie n'est envoyée ou sauvegardée.</div>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">PA</span>
+      <span>Purple Academy</span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html#offre">L'offre</a>
+      <a href="index.html#methode">Méthode</a>
+      <a href="blog/index.html">Blog</a>
+      <a href="index.html#guide">Guide</a>
+      <a href="index.html#a-propos">À propos</a>
+      <a href="index.html#faq">FAQ</a>
+    </nav>
+    <a class="btn solid" href="index.html#guide">Télécharger le guide</a>
+    <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Ouvrir le menu">
+      <span class="nav-toggle-bars"></span>
+    </button>
+  </div>
+  <div class="mobile-nav" id="mobile-nav" hidden>
+    <nav class="mobile-nav-inner" aria-label="Navigation mobile">
+      <a href="index.html#offre">L'offre</a>
+      <a href="index.html#methode">Méthode</a>
+      <a href="blog/index.html">Blog</a>
+      <a href="index.html#guide">Guide</a>
+      <a href="index.html#a-propos">À propos</a>
+      <a href="index.html#faq">FAQ</a>
+      <a class="btn solid" href="index.html#guide">Télécharger le guide</a>
+    </nav>
+  </div>
+</header>
+
+<section class="sim-header">
+  <div class="wrap">
+    <span class="eyebrow">Gestion du budget au quotidien</span>
+    <h1>Combien vous reste-t-il <em>vraiment</em> à la fin du mois ?</h1>
+    <p>Saisissez vos revenus et vos charges habituelles — loyer, alimentation, enfants, transports, abonnements, énergie, assurances, crédits, divers. Le simulateur calcule votre reste à vivre en direct et vous propose un plan d'action par poste.</p>
+    <div class="sim-meta">
+      <span>⏱ 3 minutes</span>
+      <span>🔒 Rien n'est enregistré</span>
+      <span>📊 Résultat instantané</span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="sim-layout">
+
+    <!-- FORM COLUMN -->
+    <div>
+      <div class="sim-card">
+        <h2>Vos revenus</h2>
+        <p class="sub">Revenus nets mensuels du foyer, toutes sources confondues.</p>
+        <div class="field income-row">
+          <label for="revenu">Revenus nets / mois</label>
+          <div class="cat-input" style="width:100%">
+            <input id="revenu" type="number" inputmode="decimal" min="0" step="10" placeholder="2400" style="width:100%; text-align:left; padding-right:38px;">
+          </div>
+        </div>
+      </div>
+
+      <div class="sim-card">
+        <h2>Vos charges mensuelles</h2>
+        <p class="sub">Si vous connaissez déjà votre budget mensuel pour un poste, indiquez directement le montant global. Pour les postes à plusieurs composantes (enfants, transports, abonnements, assurances), vous pouvez aussi cliquer sur « Détailler ce poste » pour décomposer et gagner du temps grâce aux suggestions.</p>
+        <div class="cat-grid" id="cat-grid"></div>
+      </div>
+    </div>
+
+    <!-- RESULTS COLUMN -->
+    <div class="results-panel">
+      <div class="sim-card">
+        <div class="rtv-figure">
+          <div class="rtv-label">Reste à vivre estimé</div>
+          <div class="rtv-value pos" id="rtv-value">0 €</div>
+          <div class="rtv-sub" id="rtv-sub">Remplissez vos revenus et charges pour voir le résultat</div>
+        </div>
+        <div class="bar-track"><div class="bar-fill" id="bar-fill"></div></div>
+        <div class="bar-legend">
+          <span id="bar-depenses">Dépenses : 0 €</span>
+          <span id="bar-revenu">Revenus : 0 €</span>
+        </div>
+        <div class="save-badge" id="save-badge">
+          <div class="k">Taux d'épargne possible</div>
+          <div class="v" id="save-rate">0 %</div>
+        </div>
+
+        <div class="paywall">
+          <div class="price">50 €</div>
+          <p>Accédez au plan d'action complet et personnalisé, poste par poste, avec suivi mensuel.</p>
+          <a class="btn solid" href="index.html#contact">Être recontacté(e) pour l'offre complète</a>
+          <p class="fine">Maquette — aucun paiement n'est traité sur ce prototype.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sim-card" style="margin-bottom:64px;">
+    <h2>Votre plan d'action, poste par poste</h2>
+    <p class="sub">Généré automatiquement à partir de vos saisies et de repères budgétaires standards (indicatif, non personnalisé).</p>
+    <div class="plan-list" id="plan-list">
+      <div class="plan-empty">Renseignez vos revenus et vos charges ci-dessus pour générer votre plan d'action.</div>
+    </div>
+  </div>
+</div>
+
+<footer class="colophon">
+  <div class="wrap colo-grid">
+    <div class="colo-brand">
+      <a href="index.html" class="brand"><span class="brand-mark">PA</span><span>Purple Academy</span></a>
+      <p>Éducation financière et pilotage budgétaire, sans jargon.</p>
+    </div>
+    <div>
+      <h4>Navigation</h4>
+      <ul>
+        <li><a href="index.html#offre">L'offre</a></li>
+        <li><a href="index.html#methode">Méthode</a></li>
+        <li><a href="blog/index.html">Blog</a></li>
+        <li><a href="index.html#a-propos">À propos</a></li>
+        <li><a href="index.html#faq">FAQ</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Ressources</h4>
+      <ul>
+        <li><a href="index.html#guide">Guide gratuit</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+        <li><a href="mentions-legales.html">Mentions légales</a></li>
+        <li><a href="confidentialite.html">Confidentialité · RGPD</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap colo-bottom">
+    <span>© 2026 Purple Academy — Tous droits réservés</span>
+    <span>Édité en France · Marc Ernoult</span>
+  </div>
+</footer>
+
+<script>
+  const navToggle = document.getElementById('nav-toggle');
+  const mobileNav = document.getElementById('mobile-nav');
+  const closeMobileNav = () => {
+    mobileNav.hidden = true;
+    mobileNav.classList.remove('open');
+    navToggle.setAttribute('aria-expanded', 'false');
+    navToggle.setAttribute('aria-label', 'Ouvrir le menu');
+  };
+  navToggle.addEventListener('click', () => {
+    const isOpen = navToggle.getAttribute('aria-expanded') === 'true';
+    if (isOpen) { closeMobileNav(); }
+    else {
+      mobileNav.hidden = false;
+      mobileNav.classList.add('open');
+      navToggle.setAttribute('aria-expanded', 'true');
+      navToggle.setAttribute('aria-label', 'Fermer le menu');
+    }
+  });
+  mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMobileNav));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMobileNav(); });
+
+  // ---- Budget simulator ----
+  // Preset amounts for streaming are indicative public list prices, editable by the user.
+  // Presets without an amount (telecom operators, insurance, childcare...) vary too much
+  // to pre-fill responsibly — they're offered as quick labels only.
+  const CATEGORIES = [
+    { id: 'logement', icon: '🏠', label: 'Loyer / charges', hint: 'ou mensualité de crédit immobilier', benchmark: 0.30,
+      tips: ["Vérifiez votre éligibilité aux APL/ALF si ce n'est pas déjà fait.", "Une colocation ou un déménagement vers un logement plus petit peut faire baisser ce poste de plusieurs centaines d'euros.", "Si vous êtes locataire depuis plus de 3 ans, une renégociation ou une comparaison du marché local est possible."] },
+    { id: 'alimentation', icon: '🛒', label: 'Alimentation', hint: 'courses, cantine', benchmark: 0.15,
+      tips: ["Planifiez vos repas sur la semaine pour réduire le gaspillage et les achats impulsifs.", "Comparez les prix au kilo plutôt qu'à l'unité, et privilégiez les marques distributeur sur les produits de base.", "Limitez la livraison de repas, qui coûte en moyenne 2 à 3 fois plus cher qu'un repas préparé."] },
+    { id: 'enfants', icon: '🧒', label: 'Enfants', hint: 'garde, activités, fournitures', benchmark: 0.15,
+      tips: ["Vérifiez vos droits aux aides CAF (PAJE, complément de mode de garde, allocation de rentrée scolaire).", "Regroupez les activités extrascolaires sur un seul enfant à la fois si le budget est serré, en alternant d'une année sur l'autre.", "Les dispositifs municipaux (tarifs cantine/activités selon quotient familial) sont souvent sous-utilisés — vérifiez votre quotient."],
+      detailable: true,
+      presetNote: "Cliquez pour ajouter une ligne, puis indiquez le montant réel.",
+      presets: [
+        { label: 'Garde (crèche / nounou)' },
+        { label: 'Activités extrascolaires' },
+        { label: 'Fournitures / achats' },
+      ] },
+    { id: 'transports', icon: '🚗', label: 'Transports', hint: 'carburant, transport en commun, entretien', benchmark: 0.15,
+      tips: ["Le covoiturage ou les transports en commun peuvent diviser ce poste par deux sur les trajets domicile-travail.", "Un forfait d'entretien régulier évite les grosses réparations imprévues qui déséquilibrent le budget.", "Comparez les abonnements de transport en commun mensuels et annuels : l'annuel est souvent plus avantageux."],
+      detailable: true,
+      presetNote: "Cliquez pour ajouter une ligne, puis indiquez le montant réel.",
+      presets: [
+        { label: 'Carburant' },
+        { label: 'Transport en commun / abonnement' },
+        { label: 'Entretien véhicule' },
+      ] },
+    { id: 'abonnements', icon: '📱', label: 'Abonnements', hint: 'streaming, téléphonie, internet, salle de sport', benchmark: 0.05,
+      tips: ["Listez tous vos abonnements actifs — la moyenne des foyers en oublie 2 à 3 qu'ils n'utilisent plus.", "Regroupez ou résiliez les doublons (plusieurs plateformes de streaming, deux forfaits mobile).", "Les offres duo/famille reviennent souvent moins cher que des abonnements individuels."],
+      detailable: true,
+      presetNote: "Tarifs streaming à titre indicatif — ajustez-les selon votre offre réelle. Forfaits mobile, box et salle de sport varient trop pour être pré-remplis : le montant reste à votre charge.",
+      presets: [
+        { label: 'Netflix', amount: 13.49 },
+        { label: 'Disney+', amount: 8.99 },
+        { label: 'Amazon Prime Video', amount: 6.99 },
+        { label: 'Apple TV+', amount: 9.99 },
+        { label: 'Spotify', amount: 10.99 },
+        { label: 'Forfait mobile Orange' },
+        { label: 'Forfait mobile SFR' },
+        { label: 'Forfait mobile Bouygues' },
+        { label: 'Box internet' },
+        { label: 'Salle de sport' },
+      ] },
+    { id: 'energie', icon: '💡', label: 'Énergie', hint: 'électricité, gaz, eau', benchmark: 0.08,
+      tips: ["Utilisez un comparateur d'offres d'énergie une fois par an, la concurrence a baissé les prix sur certains contrats.", "Les éco-gestes simples (température, veille des appareils) représentent 10 à 15 % d'économie sans investissement.", "Une mensualisation lissée évite les pics de facture en hiver et facilite le pilotage du budget."] },
+    { id: 'assurances', icon: '🛡️', label: 'Assurances & mutuelle', hint: 'habitation, santé, auto, prévoyance', benchmark: 0.06,
+      tips: ["Faites un comparatif tous les 1 à 2 ans : la loi Hamon permet de résilier à tout moment après un an.", "Vérifiez les doublons de garanties entre vos contrats (carte bancaire, mutuelle, assurance habitation).", "Ajustez le niveau de mutuelle à vos besoins réels plutôt qu'à une offre standard trop complète."],
+      detailable: true,
+      presetNote: "Cliquez pour ajouter une ligne, puis indiquez le montant réel.",
+      presets: [
+        { label: 'Mutuelle santé' },
+        { label: 'Assurance habitation' },
+        { label: 'Assurance auto' },
+        { label: 'Prévoyance' },
+      ] },
+    { id: 'credits', icon: '💳', label: 'Crédits', hint: 'conso, auto, autres (hors immobilier)', benchmark: 0.10,
+      tips: ["Priorisez le remboursement du crédit au taux le plus élevé en premier.", "Un rachat ou regroupement de crédits peut réduire vos mensualités si vous cumulez plusieurs emprunts.", "Évitez tout nouveau crédit à la consommation tant que ce poste dépasse le repère recommandé."] },
+    { id: 'divers', icon: '🎯', label: 'Dépenses diverses', hint: 'loisirs, vêtements, imprévus', benchmark: 0.10,
+      tips: ["Fixez une enveloppe fixe pour ce poste et suivez-la chaque semaine plutôt qu'en fin de mois.", "Séparez un petit compte \"plaisir\" du reste pour éviter que les imprévus grignotent l'épargne.", "Les dépenses diverses sont souvent sous-estimées : elles méritent un suivi aussi rigoureux que le loyer."] },
+  ];
+
+  // Per-category detail state: { active: bool, items: [{ id, label, amount }] }
+  const detailState = {};
+  CATEGORIES.forEach(cat => { detailState[cat.id] = { active: false, items: [] }; });
+
+  const catGrid = document.getElementById('cat-grid');
+  CATEGORIES.forEach(cat => {
+    const block = document.createElement('div');
+    block.className = 'cat-block';
+
+    let html = `
+      <div class="cat-row">
+        <div class="cat-icon">${cat.icon}</div>
+        <div>
+          <div class="cat-label">${cat.label}</div>
+          <div class="cat-hint">${cat.hint}</div>
+        </div>
+        <div class="cat-input"><input type="number" inputmode="decimal" min="0" step="5" placeholder="0" id="in-${cat.id}"></div>
+      </div>
+    `;
+
+    if (cat.detailable) {
+      html += `
+        <div class="cat-toggle-row">
+          <button type="button" class="detail-link" data-action="open" data-cat="${cat.id}">+ Détailler ce poste</button>
+        </div>
+        <div class="cat-detail-panel" id="detail-${cat.id}" hidden>
+          <p class="preset-note">${cat.presetNote}</p>
+          <div class="preset-chips">
+            ${cat.presets.map(p => `<button type="button" class="chip" data-action="add-preset" data-cat="${cat.id}" data-label="${p.label}" data-amount="${p.amount ?? ''}">${p.label}${p.amount ? ` · ${p.amount.toFixed(2).replace('.', ',')} €` : ''}</button>`).join('')}
+            <button type="button" class="chip chip-custom" data-action="add-custom" data-cat="${cat.id}">+ Autre</button>
+          </div>
+          <div class="item-list" id="items-${cat.id}"></div>
+          <div class="detail-subtotal" id="subtotal-${cat.id}" hidden><span>Sous-total détaillé</span><span id="subtotal-value-${cat.id}">0 €</span></div>
+          <button type="button" class="detail-link" data-action="close" data-cat="${cat.id}">← Revenir à la saisie simple</button>
+        </div>
+      `;
+    }
+
+    block.innerHTML = html;
+    catGrid.appendChild(block);
+  });
+
+  const revenuInput = document.getElementById('revenu');
+  const rtvValue = document.getElementById('rtv-value');
+  const rtvSub = document.getElementById('rtv-sub');
+  const barFill = document.getElementById('bar-fill');
+  const barDepenses = document.getElementById('bar-depenses');
+  const barRevenu = document.getElementById('bar-revenu');
+  const saveBadge = document.getElementById('save-badge');
+  const saveRate = document.getElementById('save-rate');
+  const planList = document.getElementById('plan-list');
+
+  const fmt = (n) => n.toLocaleString('fr-FR', { maximumFractionDigits: 0 }) + ' €';
+  const catById = (id) => CATEGORIES.find(c => c.id === id);
+
+  function renderItems(catId) {
+    const state = detailState[catId];
+    const list = document.getElementById(`items-${catId}`);
+    if (!state.items.length) {
+      list.innerHTML = '<p class="detail-empty">Aucune ligne ajoutée pour l\'instant — utilisez les boutons ci-dessus.</p>';
+    } else {
+      list.innerHTML = state.items.map(item => `
+        <div class="item-row" data-item="${item.id}">
+          <input type="text" value="${item.label.replace(/"/g, '&quot;')}" data-action="item-label" data-cat="${catId}" data-item="${item.id}" placeholder="Intitulé">
+          <div class="cat-input"><input type="number" inputmode="decimal" min="0" step="5" value="${item.amount === '' ? '' : item.amount}" data-action="item-amount" data-cat="${catId}" data-item="${item.id}" placeholder="0"></div>
+          <button type="button" class="item-remove" data-action="remove-item" data-cat="${catId}" data-item="${item.id}" aria-label="Supprimer cette ligne">×</button>
+        </div>
+      `).join('');
+    }
+    const subtotal = state.items.reduce((sum, it) => sum + (parseFloat(it.amount) || 0), 0);
+    const subtotalRow = document.getElementById(`subtotal-${catId}`);
+    subtotalRow.hidden = state.items.length === 0;
+    document.getElementById(`subtotal-value-${catId}`).textContent = fmt(subtotal);
+  }
+
+  function openDetail(catId) {
+    detailState[catId].active = true;
+    document.getElementById(`detail-${catId}`).hidden = false;
+    const simpleInput = document.getElementById(`in-${catId}`);
+    simpleInput.disabled = true;
+    renderItems(catId);
+    recalc();
+  }
+
+  function closeDetail(catId) {
+    detailState[catId] = { active: false, items: [] };
+    document.getElementById(`detail-${catId}`).hidden = true;
+    const simpleInput = document.getElementById(`in-${catId}`);
+    simpleInput.disabled = false;
+    simpleInput.value = '';
+    recalc();
+  }
+
+  catGrid.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const action = btn.dataset.action;
+    const catId = btn.dataset.cat;
+
+    if (action === 'open') { openDetail(catId); return; }
+    if (action === 'close') { closeDetail(catId); return; }
+
+    if (action === 'add-preset') {
+      const amount = btn.dataset.amount;
+      detailState[catId].items.push({ id: 'i' + Date.now() + Math.random().toString(36).slice(2, 6), label: btn.dataset.label, amount: amount === '' ? '' : parseFloat(amount) });
+      renderItems(catId);
+      recalc();
+      return;
+    }
+    if (action === 'add-custom') {
+      const id = 'i' + Date.now() + Math.random().toString(36).slice(2, 6);
+      detailState[catId].items.push({ id, label: '', amount: '' });
+      renderItems(catId);
+      recalc();
+      const input = catGrid.querySelector(`input[data-action="item-label"][data-item="${id}"]`);
+      if (input) input.focus();
+      return;
+    }
+    if (action === 'remove-item') {
+      const itemId = btn.dataset.item;
+      detailState[catId].items = detailState[catId].items.filter(it => it.id !== itemId);
+      renderItems(catId);
+      recalc();
+      return;
+    }
+  });
+
+  catGrid.addEventListener('input', (e) => {
+    const target = e.target;
+    const action = target.dataset.action;
+    if (action === 'item-label' || action === 'item-amount') {
+      const catId = target.dataset.cat;
+      const itemId = target.dataset.item;
+      const item = detailState[catId].items.find(it => it.id === itemId);
+      if (!item) return;
+      if (action === 'item-label') item.label = target.value;
+      else item.amount = target.value;
+      if (action === 'item-amount') {
+        const subtotal = detailState[catId].items.reduce((sum, it) => sum + (parseFloat(it.amount) || 0), 0);
+        document.getElementById(`subtotal-value-${catId}`).textContent = fmt(subtotal);
+      }
+      recalc();
+    }
+  });
+
+  function categoryTotal(cat) {
+    const state = detailState[cat.id];
+    if (state && state.active) {
+      return state.items.reduce((sum, it) => sum + (parseFloat(it.amount) || 0), 0);
+    }
+    return parseFloat(document.getElementById(`in-${cat.id}`).value) || 0;
+  }
+
+  function recalc() {
+    const revenu = parseFloat(revenuInput.value) || 0;
+    let totalDepenses = 0;
+    const values = {};
+    CATEGORIES.forEach(cat => {
+      const v = categoryTotal(cat);
+      values[cat.id] = v;
+      totalDepenses += v;
+      if (detailState[cat.id].active) {
+        document.getElementById(`in-${cat.id}`).value = v ? v.toString() : '';
+      }
+    });
+
+    const rtv = revenu - totalDepenses;
+    rtvValue.textContent = fmt(rtv);
+    rtvValue.className = 'rtv-value ' + (rtv >= 0 ? 'pos' : 'neg');
+
+    if (revenu === 0 && totalDepenses === 0) {
+      rtvSub.textContent = "Remplissez vos revenus et charges pour voir le résultat";
+    } else if (rtv < 0) {
+      rtvSub.textContent = "Vos charges dépassent vos revenus ce mois-ci.";
+    } else {
+      rtvSub.textContent = "Il vous reste ce montant une fois toutes les charges couvertes.";
+    }
+
+    const maxScale = Math.max(revenu, totalDepenses, 1);
+    const scale = Math.min(1, totalDepenses / maxScale);
+    barFill.style.transform = `scaleX(${scale})`;
+    barFill.style.background = rtv < 0 ? 'var(--error)' : 'var(--violet)';
+    barDepenses.textContent = `Dépenses : ${fmt(totalDepenses)}`;
+    barRevenu.textContent = `Revenus : ${fmt(revenu)}`;
+
+    const rate = revenu > 0 ? (rtv / revenu) * 100 : 0;
+    saveRate.textContent = Math.round(rate) + ' %';
+    saveBadge.classList.toggle('warn', rate < 10);
+
+    // Action plan per category
+    planList.innerHTML = '';
+    if (revenu === 0) {
+      planList.innerHTML = '<div class="plan-empty">Renseignez vos revenus et vos charges ci-dessus pour générer votre plan d\'action.</div>';
+      return;
+    }
+    CATEGORIES.forEach(cat => {
+      const v = values[cat.id];
+      if (v === 0) return;
+      const share = v / revenu;
+      const over = share > cat.benchmark;
+      const card = document.createElement('div');
+      card.className = 'plan-card ' + (over ? 'alert' : 'ok');
+      const tip = over ? cat.tips[0] : `Ce poste reste dans un repère raisonnable (≤ ${Math.round(cat.benchmark * 100)} % des revenus). ${cat.tips[1] || ''}`;
+      card.innerHTML = `
+        <div class="plan-head">
+          <span class="plan-title">${cat.icon} ${cat.label}</span>
+          <span class="plan-pct">${Math.round(share * 100)} % des revenus${over ? ' · au-dessus du repère' : ''}</span>
+        </div>
+        <p>${tip}</p>
+      `;
+      planList.appendChild(card);
+    });
+    if (!planList.children.length) {
+      planList.innerHTML = '<div class="plan-empty">Ajoutez vos charges pour générer votre plan d\'action.</div>';
+    }
+  }
+
+  revenuInput.addEventListener('input', recalc);
+  CATEGORIES.forEach(cat => {
+    document.getElementById(`in-${cat.id}`).addEventListener('input', recalc);
+  });
+  recalc();
+</script>
+
+</body>
+</html>
