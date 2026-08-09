@@ -46,11 +46,19 @@ async function sendGuideEmail(email: string, prenom: string, signedUrl: string |
       to: [email],
       subject: "Ton guide d'auto-diagnostic budgétaire",
       html: `
-        <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">
-          <h1 style="font-size:22px;">Merci ${prenom} !</h1>
-          <p>Voici ton guide d'auto-diagnostic budgétaire, prêt à remplir en 15 minutes.</p>
+        <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; color:#1a1a1a; line-height:1.6;">
+          <h1 style="font-size:22px;">Bonjour ${prenom},</h1>
+          <p>Merci de t'intéresser à la gestion financière et à l'optimisation de ton budget.</p>
+          <p>Je te propose de découvrir et télécharger ci-dessous le guide d'auto-diagnostic budgétaire : un outil simple et concret pour faire un premier état des lieux de tes finances en 15 minutes, sans jugement ni complexité inutile.</p>
+          <p style="margin-bottom:8px;">Ce que tu vas y trouver :</p>
+          <ul style="margin-top:0; padding-left:20px;">
+            <li>Un état des lieux clair de tes dépenses et de tes revenus</li>
+            <li>Des pistes concrètes pour optimiser ton budget au quotidien</li>
+            <li>Une base pour construire ta vision financière à moyen et long terme</li>
+          </ul>
           <p style="margin: 28px 0;">${downloadSection}</p>
-          <p style="color:#666;font-size:13px;">Ce lien expire dans 7 jours. Une question ? Réponds directement à cet email.</p>
+          <p style="color:#666;font-size:13px;">Ce lien est valable 7 jours.</p>
+          <p style="margin-top:32px;">À bientôt,<br>Marc Ernoult<br><span style="color:#666;font-size:13px;">Purple Academy — Éducation financière &amp; pilotage budgétaire</span></p>
         </div>
       `,
     }),
