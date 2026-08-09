@@ -105,6 +105,7 @@
   /* Nav — masthead */
   .masthead { position: sticky; top: 0; z-index: 50; background: rgba(251,247,241,.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--cream-2); }
   .masthead-inner { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 32px; max-width: 1200px; margin: 0 auto; padding: 14px 40px; }
+  .masthead-brand-group { display: flex; align-items: center; gap: 14px; }
   .brand { display: flex; align-items: center; gap: 10px; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 1.15rem; letter-spacing: -0.01em; color: var(--ink); }
   .brand-mark { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 10px; background: var(--violet); color: var(--white); font-weight: 800; font-size: .85rem; letter-spacing: -0.02em; }
   .nav-links { display: flex; justify-content: center; gap: 8px; }
@@ -112,6 +113,57 @@
   .masthead-inner .btn.solid { padding: 10px 20px; font-size: .92rem; border-width: 0; line-height: 20px; min-height: 44px; }
   .nav-links a:hover { color: var(--violet-ink); background: var(--violet-soft); }
   .nav-links a:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+
+  /* Site switcher — navigate between marc-ernoult.fr subdomains */
+  .masthead-divider { width: 1px; height: 24px; background: var(--cream-2); flex-shrink: 0; }
+  .site-switcher { position: relative; }
+  .site-switcher-trigger {
+    display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+    padding: 7px 12px; border: 1px solid var(--cream-2); border-radius: 999px;
+    background: var(--white); box-shadow: var(--shadow-sm);
+    font-family: inherit; font-size: .86rem; font-weight: 600; color: var(--ink-2);
+    cursor: pointer; transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease, color .15s ease;
+  }
+  .site-switcher-trigger:hover { border-color: var(--violet-soft-2); box-shadow: var(--shadow-md); color: var(--ink); }
+  .site-switcher-trigger:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+  .site-switcher-trigger[aria-expanded="true"] { background: var(--violet-soft); border-color: var(--violet-soft-2); color: var(--violet-ink); }
+  .site-switcher-chevron { color: currentColor; flex-shrink: 0; transition: transform .18s ease-out; }
+  .site-switcher-trigger[aria-expanded="true"] .site-switcher-chevron { transform: rotate(180deg); }
+
+  .site-switcher-menu {
+    position: absolute; top: calc(100% + 10px); left: 0; z-index: 60;
+    min-width: min(300px, calc(100vw - 40px));
+    background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+    padding: 8px;
+  }
+  .site-switcher-menu[hidden] { display: none; }
+  .site-switcher-item {
+    display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--radius-md);
+    text-decoration: none; border-bottom: none; color: inherit; transition: background-color .12s ease;
+  }
+  a.site-switcher-item:hover { background: var(--violet-soft); }
+  .site-switcher-icon {
+    display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+    width: 36px; height: 36px; border-radius: var(--radius-sm);
+    font-weight: 800; font-size: .78rem; letter-spacing: -0.01em;
+    background: var(--violet-soft); color: var(--violet-ink);
+  }
+  .site-switcher-item.current .site-switcher-icon { background: var(--violet); color: var(--white); }
+  .site-switcher-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .site-switcher-name { font-size: .94rem; font-weight: 700; color: var(--ink); }
+  .site-switcher-domain { font-size: .78rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .site-switcher-here, .site-switcher-badge {
+    margin-left: auto; flex-shrink: 0; font-size: .7rem; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+  }
+  .site-switcher-here { background: var(--violet); color: var(--white); }
+  .site-switcher-badge { background: var(--violet-soft); color: var(--violet-ink); }
+  .site-switcher-item.soon { cursor: default; }
+  .site-switcher-item.soon .site-switcher-name { color: var(--ink-2); }
+
+  @media (max-width: 900px) {
+    .masthead-divider { display: none; }
+    .site-switcher-menu { left: auto; right: 0; }
+  }
 
   /* Mobile nav toggle */
   .nav-toggle { display: none; width: 44px; height: 44px; padding: 0; border: 1px solid var(--cream-2); border-radius: var(--radius-sm); background: var(--white); cursor: pointer; position: relative; justify-self: end; box-shadow: var(--shadow-sm); }
@@ -435,10 +487,46 @@
 
 <header class="masthead">
   <div class="masthead-inner">
-    <a href="#" class="brand">
-      <span class="brand-mark">PA</span>
-      <span>Purple Academy</span>
-    </a>
+    <div class="masthead-brand-group">
+      <a href="#" class="brand">
+        <span class="brand-mark">PA</span>
+        <span>Purple Academy</span>
+      </a>
+      <span class="masthead-divider" aria-hidden="true"></span>
+      <div class="site-switcher">
+        <button type="button" class="site-switcher-trigger" id="site-switcher-btn" aria-haspopup="true" aria-expanded="false" aria-controls="site-switcher-menu">
+          <span class="label">Mes sites</span>
+          <svg class="site-switcher-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="site-switcher-menu" id="site-switcher-menu" role="menu" aria-labelledby="site-switcher-btn" hidden>
+          <a href="https://www.marc-ernoult.fr" class="site-switcher-item" role="menuitem">
+            <span class="site-switcher-icon">ME</span>
+            <span class="site-switcher-text">
+              <span class="site-switcher-name">Profil</span>
+              <span class="site-switcher-domain">marc-ernoult.fr</span>
+            </span>
+          </a>
+          <a href="https://academie.marc-ernoult.fr" class="site-switcher-item current" role="menuitem" aria-current="page">
+            <span class="site-switcher-icon">PA</span>
+            <span class="site-switcher-text">
+              <span class="site-switcher-name">Académie</span>
+              <span class="site-switcher-domain">academie.marc-ernoult.fr</span>
+            </span>
+            <span class="site-switcher-here">Ici</span>
+          </a>
+          <span class="site-switcher-item soon" role="menuitem" aria-disabled="true">
+            <span class="site-switcher-icon">F1</span>
+            <span class="site-switcher-text">
+              <span class="site-switcher-name">F1 App</span>
+              <span class="site-switcher-domain">f1app.marc-ernoult.fr</span>
+            </span>
+            <span class="site-switcher-badge">Bientôt</span>
+          </span>
+        </div>
+      </div>
+    </div>
     <nav class="nav-links">
       <a href="#offre">L'offre</a>
       <a href="#methode">Méthode</a>
@@ -937,6 +1025,28 @@
   });
   mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMobileNav));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMobileNav(); });
+
+  // Site switcher — navigate between marc-ernoult.fr subdomains
+  const switcherBtn = document.getElementById('site-switcher-btn');
+  const switcherMenu = document.getElementById('site-switcher-menu');
+  const closeSwitcher = () => {
+    switcherMenu.hidden = true;
+    switcherBtn.setAttribute('aria-expanded', 'false');
+  };
+  switcherBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = switcherBtn.getAttribute('aria-expanded') === 'true';
+    if (isOpen) {
+      closeSwitcher();
+    } else {
+      switcherMenu.hidden = false;
+      switcherBtn.setAttribute('aria-expanded', 'true');
+    }
+  });
+  document.addEventListener('click', (e) => {
+    if (!switcherMenu.hidden && !switcherMenu.contains(e.target) && e.target !== switcherBtn) closeSwitcher();
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSwitcher(); });
 
   // Forms — persisted to Supabase (insert-only, RLS-protected)
   const supabaseClient = window.supabase.createClient(
