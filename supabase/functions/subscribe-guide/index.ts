@@ -42,7 +42,7 @@ async function sendGuideEmail(email: string, prenom: string, signedUrl: string |
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "Marc Ernoult <guide@send.marc-ernoult.fr>",
+      from: "Marc Ernoult <guide@contact.marc-ernoult.fr>",
       to: [email],
       subject: "Ton guide d'auto-diagnostic budgétaire",
       html: `
