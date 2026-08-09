@@ -184,6 +184,7 @@ Système arrondi modéré : rayons de 10px (boutons, inputs, petits badges) à 2
 
 ### Navigation (`.masthead`)
 - **Style:** logo en badge carré arrondi violet ("PA"), liens en pilules qui se teintent de violet doux au survol (pas de soulignement animé).
+- **Spec de référence (partagée avec le site vitrine `site-perso`) :** conteneur `.masthead-inner` en padding `14px 40px` (largeur max 1200px) ; badge logo `32×32px`, rayon `10px`, texte `.85rem`/800 ; nom de marque `1.15rem`/700 ; liens de nav en pilule `padding: 8px 12px`, `.92rem`/500 ; CTA (`.btn.solid` du header) `padding: 10px 20px`, `.92rem`/600, `line-height: 20px`, `border-width: 0` (contrairement au `.btn.solid` générique qui garde une bordure pleine violet) pour éviter qu'elle gonfle la hauteur du bouton ; bouton burger mobile `44×44px` (cible tactile). Ces valeurs sont la source de vérité pour tout header du même registre visuel (y compris `site-perso`), afin d'éviter la dérive de taille entre les deux sites.
 
 ## Do's and Don'ts
 
