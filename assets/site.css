@@ -71,7 +71,7 @@ a:hover { border-bottom-color: var(--violet); }
 .brand-mark { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 10px; background: var(--violet); color: var(--white); font-weight: 800; font-size: .85rem; }
 .nav-links { display: flex; justify-content: center; gap: 8px; }
 .nav-links a { font-size: .92rem; font-weight: 500; color: var(--ink-2); border-bottom: none; padding: 8px 12px; border-radius: 999px; transition: background-color .15s, color .15s; }
-.masthead-inner .btn.solid { padding: 10px 20px; font-size: .92rem; border-width: 0; line-height: 20px; }
+.masthead-inner .btn.solid { padding: 10px 20px; font-size: .92rem; border-width: 0; line-height: 20px; min-height: 44px; }
 .nav-links a:hover, .nav-links a.active { color: var(--violet-ink); background: var(--violet-soft); }
 
 .nav-toggle { display: none; width: 44px; height: 44px; padding: 0; border: 1px solid var(--cream-2); border-radius: var(--radius-sm); background: var(--white); cursor: pointer; position: relative; justify-self: end; box-shadow: var(--shadow-sm); }
