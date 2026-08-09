@@ -734,10 +734,12 @@
           <label for="lead-email">Adresse email</label>
           <input id="lead-email" name="email" type="email" required placeholder="vous@email.com">
         </div>
+        <input type="text" name="website" id="lead-botfield" autocomplete="off" tabindex="-1" style="position:absolute;left:-9999px;" aria-hidden="true">
         <button class="btn solid" type="submit">Recevoir le guide <span class="arrow"></span></button>
         <p class="form-fine">Zéro spam · désabonnement en un clic</p>
         <div class="form-status" id="lead-status">Merci ! Vérifiez votre boîte mail dans les prochaines minutes.</div>
         <div class="form-status form-status-error" id="lead-status-error">Une erreur est survenue. Réessayez ou écrivez à contact@marc-ernoult.fr.</div>
+        <div class="form-status form-status-error" id="lead-status-disposable">Merci d'utiliser une adresse email personnelle ou professionnelle (les adresses jetables ne sont pas acceptées).</div>
       </form>
     </div>
   </div>
@@ -1057,23 +1059,39 @@
   const leadForm = document.getElementById('lead-form');
   const leadStatus = document.getElementById('lead-status');
   const leadStatusError = document.getElementById('lead-status-error');
+  const leadStatusDisposable = document.getElementById('lead-status-disposable');
   leadForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     leadStatus.classList.remove('ok');
     leadStatusError.classList.remove('ok');
+    leadStatusDisposable.classList.remove('ok');
     const btn = leadForm.querySelector('button');
     const btnLabel = btn.innerHTML;
     btn.disabled = true;
     btn.textContent = 'Envoi en cours…';
-    const { error } = await supabaseClient.from('leads').insert({
-      prenom: leadForm.prenom.value.trim(),
-      email: leadForm.email.value.trim(),
-    });
-    if (error) {
+    try {
+      const res = await fetch('https://punltixwcgwxbvvyrahy.supabase.co/functions/v1/subscribe-guide', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prenom: leadForm.prenom.value.trim(),
+          email: leadForm.email.value.trim(),
+          website: leadForm.website.value,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        if (data.reason === 'disposable_email' || data.reason === 'invalid_email') {
+          leadStatusDisposable.classList.add('ok');
+        } else {
+          leadStatusError.classList.add('ok');
+        }
+      } else {
+        leadStatus.classList.add('ok');
+        leadForm.reset();
+      }
+    } catch {
       leadStatusError.classList.add('ok');
-    } else {
-      leadStatus.classList.add('ok');
-      leadForm.reset();
     }
     btn.disabled = false;
     btn.innerHTML = btnLabel;
