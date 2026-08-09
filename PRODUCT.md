@@ -23,12 +23,12 @@ Une méthode personnelle éprouvée par le consultant lui-même : jeune cadre en
 - Page d'accueil : introduction personnelle du consultant, présentation de l'offre (2 axes : gestion du budget quotidien / projection financière), téléchargement gratuit d'un guide de diagnostic budgétaire via CTA violet en header.
 - Formulaire de contact en bas de page (Nom, Email, Message), validation email obligatoire, protection anti-spam, bouton "Envoyer le message" en violet.
 - Section blog prévue pour contenus pédagogiques et SEO (non encore implémentée).
-- Site statique (pas de backend actuellement) — la collecte des données de formulaire vers une BDD sécurisée/RGPD est un objectif futur, pas encore en place.
+- Backend léger via Supabase : le formulaire guide (`#guide`) et le formulaire de contact écrivent dans une base Postgres sécurisée (RLS, insert-only, aucune lecture publique). Le formulaire guide passe par une Edge Function (`subscribe-guide`) qui filtre les emails jetables/invalides (liste de domaines connus + vérification MX) et envoie automatiquement un email (via Resend) contenant un lien sécurisé et temporaire (7 jours) vers le PDF du guide, stocké dans un bucket Supabase Storage privé (`guides`).
 
 ## Capabilities and Constraints
 
 - Site vitrine statique à ce stade : pas de compte utilisateur, pas d'espace membre, pas de paiement en ligne.
-- Le téléchargement du guide budgétaire et le formulaire de contact n'ont pas encore de backend fonctionnel (à confirmer/implémenter séparément).
+- Le téléchargement du guide budgétaire a un backend fonctionnel (Supabase + Resend). Le PDF réel doit être déposé manuellement dans le bucket Storage `guides` (remplace un fichier placeholder) — aucune interface d'upload dans le site lui-même.
 - Blog : structure prévue mais contenu et système de publication non encore construits.
 
 ## Brand Commitments
