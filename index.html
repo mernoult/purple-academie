@@ -27,7 +27,7 @@
     --white: #FFFFFF;
     --ink: #2A2438;
     --ink-2: #554F68;
-    --muted: #8B849A;
+    --muted: #6E6780;
     --error: #B91C1C;
     --radius-sm: 10px;
     --radius-md: 14px;
@@ -480,6 +480,10 @@
 
   @media (prefers-reduced-motion: reduce) {
     * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .masthead { background: var(--cream); backdrop-filter: none; }
   }
 </style>
 </head>
@@ -966,20 +970,24 @@
   const totalEl = document.querySelector('.ledger-total-amt');
   if (totalEl) {
     const target = 472.50;
-    let start = null; const dur = 1200;
     const format = (v) => v.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
-    const tick = (ts) => {
-      if (!start) start = ts;
-      const p = Math.min(1, (ts - start) / dur);
-      const eased = 1 - Math.pow(1 - p, 3);
-      totalEl.textContent = format(target * eased);
-      if (p < 1) requestAnimationFrame(tick);
-    };
-    // trigger when in view
-    const rio = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) { requestAnimationFrame(tick); rio.disconnect(); }});
-    }, { threshold: 0.5 });
-    rio.observe(totalEl);
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      totalEl.textContent = format(target);
+    } else {
+      let start = null; const dur = 1200;
+      const tick = (ts) => {
+        if (!start) start = ts;
+        const p = Math.min(1, (ts - start) / dur);
+        const eased = 1 - Math.pow(1 - p, 3);
+        totalEl.textContent = format(target * eased);
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      // trigger when in view
+      const rio = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { requestAnimationFrame(tick); rio.disconnect(); }});
+      }, { threshold: 0.5 });
+      rio.observe(totalEl);
+    }
   }
 
   // Signature — draws itself in on scroll
