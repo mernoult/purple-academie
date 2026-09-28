@@ -157,12 +157,12 @@
   }
   .site-switcher-here { background: var(--violet); color: var(--white); }
   .site-switcher-badge { background: var(--violet-soft); color: var(--violet-ink); }
-  .site-switcher-item.soon { cursor: default; }
-  .site-switcher-item.soon .site-switcher-name { color: var(--ink-2); }
 
   @media (max-width: 900px) {
     .masthead-divider { display: none; }
-    .site-switcher-menu { left: auto; right: 0; }
+    /* Anchor to the whole header (via its backdrop-filter containing block), not the
+       narrow trigger button — avoids the menu overflowing off the left edge. */
+    .site-switcher-menu { position: fixed; left: 20px; right: 20px; width: auto; min-width: 0; }
   }
 
   /* Mobile nav toggle */
@@ -515,14 +515,13 @@
             </span>
             <span class="site-switcher-here">Ici</span>
           </a>
-          <span class="site-switcher-item soon" role="menuitem" aria-disabled="true">
+          <a href="https://www.marc-ernoult.fr/projets/overtake" class="site-switcher-item" role="menuitem">
             <span class="site-switcher-icon">F1</span>
             <span class="site-switcher-text">
-              <span class="site-switcher-name">F1 App</span>
-              <span class="site-switcher-domain">f1app.marc-ernoult.fr</span>
+              <span class="site-switcher-name">Overtake</span>
+              <span class="site-switcher-domain">marc-ernoult.fr/projets/overtake</span>
             </span>
-            <span class="site-switcher-badge">Bientôt</span>
-          </span>
+          </a>
         </div>
       </div>
     </div>
@@ -1019,6 +1018,7 @@
     if (isOpen) {
       closeMobileNav();
     } else {
+      closeSwitcher();
       mobileNav.hidden = false;
       mobileNav.classList.add('open');
       navToggle.setAttribute('aria-expanded', 'true');
@@ -1041,6 +1041,7 @@
     if (isOpen) {
       closeSwitcher();
     } else {
+      closeMobileNav();
       switcherMenu.hidden = false;
       switcherBtn.setAttribute('aria-expanded', 'true');
     }
