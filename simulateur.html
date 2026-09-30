@@ -5,6 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Simulateur de budget Purple Academy — confrontez vos revenus et vos charges en quelques minutes et recevez un plan d'action par poste de dépense.">
 <title>Simulateur de budget — Purple Academy</title>
+<link rel="canonical" href="https://academie.marc-ernoult.fr/simulateur.html">
+<meta property="og:site_name" content="Purple Academy">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Simulateur de budget — Purple Academy">
+<meta property="og:description" content="Simulateur de budget Purple Academy — confrontez vos revenus et vos charges en quelques minutes et recevez un plan d&#x27;action par poste de dépense.">
+<meta property="og:url" content="https://academie.marc-ernoult.fr/simulateur.html">
+<meta property="og:image" content="https://academie.marc-ernoult.fr/assets/marc-portrait.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Simulateur de budget — Purple Academy">
+<meta name="twitter:description" content="Simulateur de budget Purple Academy — confrontez vos revenus et vos charges en quelques minutes et recevez un plan d&#x27;action par poste de dépense.">
+<meta name="twitter:image" content="https://academie.marc-ernoult.fr/assets/marc-portrait.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet">
@@ -123,10 +135,13 @@
       <a href="index.html#a-propos">À propos</a>
       <a href="index.html#faq">FAQ</a>
     </nav>
-    <a class="btn solid" href="index.html#guide">Télécharger le guide</a>
-    <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Ouvrir le menu">
+    <div class="masthead-actions">
+      <button type="button" class="lang-toggle" data-lang-toggle aria-pressed="false" aria-label="Changer de langue"><span data-lang="fr" class="on">FR</span><span aria-hidden="true">/</span><span data-lang="en">EN</span></button>
+      <a class="btn solid" href="index.html#guide">Télécharger le guide</a>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Ouvrir le menu">
       <span class="nav-toggle-bars"></span>
     </button>
+    </div>
   </div>
   <div class="mobile-nav" id="mobile-nav" hidden>
     <nav class="mobile-nav-inner" aria-label="Navigation mobile">
@@ -246,6 +261,7 @@
   </div>
 </footer>
 
+<script src="assets/i18n.js"></script>
 <script>
   const navToggle = document.getElementById('nav-toggle');
   const mobileNav = document.getElementById('mobile-nav');
@@ -253,7 +269,7 @@
     mobileNav.hidden = true;
     mobileNav.classList.remove('open');
     navToggle.setAttribute('aria-expanded', 'false');
-    navToggle.setAttribute('aria-label', 'Ouvrir le menu');
+    navToggle.setAttribute('aria-label', PA.t('Ouvrir le menu'));
   };
   navToggle.addEventListener('click', () => {
     const isOpen = navToggle.getAttribute('aria-expanded') === 'true';
@@ -262,13 +278,14 @@
       mobileNav.hidden = false;
       mobileNav.classList.add('open');
       navToggle.setAttribute('aria-expanded', 'true');
-      navToggle.setAttribute('aria-label', 'Fermer le menu');
+      navToggle.setAttribute('aria-label', PA.t('Fermer le menu'));
     }
   });
   mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMobileNav));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMobileNav(); });
 
   // ---- Budget simulator ----
+  const t = (key, vars) => PA.t(key, vars);
   // Preset amounts for streaming are indicative public list prices, editable by the user.
   // Presets without an amount (telecom operators, insurance, childcare...) vary too much
   // to pre-fill responsibly — they're offered as quick labels only.
@@ -357,7 +374,7 @@
         <div class="cat-detail-panel" id="detail-${cat.id}" hidden>
           <p class="preset-note">${cat.presetNote}</p>
           <div class="preset-chips">
-            ${cat.presets.map(p => `<button type="button" class="chip" data-action="add-preset" data-cat="${cat.id}" data-label="${p.label}" data-amount="${p.amount ?? ''}">${p.label}${p.amount ? ` · ${p.amount.toFixed(2).replace('.', ',')} €` : ''}</button>`).join('')}
+            ${cat.presets.map(p => `<button type="button" class="chip" data-action="add-preset" data-cat="${cat.id}" data-label="${p.label}" data-amount="${p.amount ?? ''}">${p.label}${p.amount ? `<span class="chip-amt" data-amt="${p.amount}"></span>` : ''}</button>`).join('')}
             <button type="button" class="chip chip-custom" data-action="add-custom" data-cat="${cat.id}">+ Autre</button>
           </div>
           <div class="item-list" id="items-${cat.id}"></div>
@@ -381,20 +398,23 @@
   const saveRate = document.getElementById('save-rate');
   const planList = document.getElementById('plan-list');
 
-  const fmt = (n) => n.toLocaleString('fr-FR', { maximumFractionDigits: 0 }) + ' €';
+  const fmt = (n) => PA.money(n);
+  const refreshChipAmounts = () => {
+    document.querySelectorAll('.chip-amt').forEach(el => { el.textContent = ' · ' + PA.money(parseFloat(el.dataset.amt), 2); });
+  };
   const catById = (id) => CATEGORIES.find(c => c.id === id);
 
   function renderItems(catId) {
     const state = detailState[catId];
     const list = document.getElementById(`items-${catId}`);
     if (!state.items.length) {
-      list.innerHTML = '<p class="detail-empty">Aucune ligne ajoutée pour l\'instant — utilisez les boutons ci-dessus.</p>';
+      list.innerHTML = '<p class="detail-empty">' + t("Aucune ligne ajoutée pour l'instant — utilisez les boutons ci-dessus.") + '</p>';
     } else {
       list.innerHTML = state.items.map(item => `
         <div class="item-row" data-item="${item.id}">
-          <input type="text" value="${item.label.replace(/"/g, '&quot;')}" data-action="item-label" data-cat="${catId}" data-item="${item.id}" placeholder="Intitulé">
+          <input type="text" value="${item.label.replace(/"/g, '&quot;')}" data-action="item-label" data-cat="${catId}" data-item="${item.id}" placeholder="${t('Intitulé')}">
           <div class="cat-input"><input type="number" inputmode="decimal" min="0" step="5" value="${item.amount === '' ? '' : item.amount}" data-action="item-amount" data-cat="${catId}" data-item="${item.id}" placeholder="0"></div>
-          <button type="button" class="item-remove" data-action="remove-item" data-cat="${catId}" data-item="${item.id}" aria-label="Supprimer cette ligne">×</button>
+          <button type="button" class="item-remove" data-action="remove-item" data-cat="${catId}" data-item="${item.id}" aria-label="${t('Supprimer cette ligne')}">×</button>
         </div>
       `).join('');
     }
@@ -433,7 +453,7 @@
 
     if (action === 'add-preset') {
       const amount = btn.dataset.amount;
-      detailState[catId].items.push({ id: 'i' + Date.now() + Math.random().toString(36).slice(2, 6), label: btn.dataset.label, amount: amount === '' ? '' : parseFloat(amount) });
+      detailState[catId].items.push({ id: 'i' + Date.now() + Math.random().toString(36).slice(2, 6), label: t(btn.dataset.label), amount: amount === '' ? '' : parseFloat(amount) });
       renderItems(catId);
       recalc();
       return;
@@ -500,28 +520,28 @@
     rtvValue.className = 'rtv-value ' + (rtv >= 0 ? 'pos' : 'neg');
 
     if (revenu === 0 && totalDepenses === 0) {
-      rtvSub.textContent = "Remplissez vos revenus et charges pour voir le résultat";
+      rtvSub.textContent = t("Remplissez vos revenus et charges pour voir le résultat");
     } else if (rtv < 0) {
-      rtvSub.textContent = "Vos charges dépassent vos revenus ce mois-ci.";
+      rtvSub.textContent = t("Vos charges dépassent vos revenus ce mois-ci.");
     } else {
-      rtvSub.textContent = "Il vous reste ce montant une fois toutes les charges couvertes.";
+      rtvSub.textContent = t("Il vous reste ce montant une fois toutes les charges couvertes.");
     }
 
     const maxScale = Math.max(revenu, totalDepenses, 1);
     const scale = Math.min(1, totalDepenses / maxScale);
     barFill.style.transform = `scaleX(${scale})`;
     barFill.style.background = rtv < 0 ? 'var(--error)' : 'var(--violet)';
-    barDepenses.textContent = `Dépenses : ${fmt(totalDepenses)}`;
-    barRevenu.textContent = `Revenus : ${fmt(revenu)}`;
+    barDepenses.textContent = t('Dépenses : {v}', { v: fmt(totalDepenses) });
+    barRevenu.textContent = t('Revenus : {v}', { v: fmt(revenu) });
 
     const rate = revenu > 0 ? (rtv / revenu) * 100 : 0;
-    saveRate.textContent = Math.round(rate) + ' %';
+    saveRate.textContent = t('{n} %', { n: Math.round(rate) });
     saveBadge.classList.toggle('warn', rate < 10);
 
     // Action plan per category
     planList.innerHTML = '';
     if (revenu === 0) {
-      planList.innerHTML = '<div class="plan-empty">Renseignez vos revenus et vos charges ci-dessus pour générer votre plan d\'action.</div>';
+      planList.innerHTML = '<div class="plan-empty">' + t("Renseignez vos revenus et vos charges ci-dessus pour générer votre plan d'action.") + '</div>';
       return;
     }
     CATEGORIES.forEach(cat => {
@@ -531,18 +551,18 @@
       const over = share > cat.benchmark;
       const card = document.createElement('div');
       card.className = 'plan-card ' + (over ? 'alert' : 'ok');
-      const tip = over ? cat.tips[0] : `Ce poste reste dans un repère raisonnable (≤ ${Math.round(cat.benchmark * 100)} % des revenus). ${cat.tips[1] || ''}`;
+      const tip = over ? t(cat.tips[0]) : `${t('Ce poste reste dans un repère raisonnable (≤ {n} % des revenus).', { n: Math.round(cat.benchmark * 100) })} ${cat.tips[1] ? t(cat.tips[1]) : ''}`;
       card.innerHTML = `
         <div class="plan-head">
-          <span class="plan-title">${cat.icon} ${cat.label}</span>
-          <span class="plan-pct">${Math.round(share * 100)} % des revenus${over ? ' · au-dessus du repère' : ''}</span>
+          <span class="plan-title">${cat.icon} ${t(cat.label)}</span>
+          <span class="plan-pct">${t('{n} % des revenus', { n: Math.round(share * 100) })}${over ? t(' · au-dessus du repère') : ''}</span>
         </div>
         <p>${tip}</p>
       `;
       planList.appendChild(card);
     });
     if (!planList.children.length) {
-      planList.innerHTML = '<div class="plan-empty">Ajoutez vos charges pour générer votre plan d\'action.</div>';
+      planList.innerHTML = '<div class="plan-empty">' + t("Ajoutez vos charges pour générer votre plan d'action.") + '</div>';
     }
   }
 
@@ -550,6 +570,15 @@
   CATEGORIES.forEach(cat => {
     document.getElementById(`in-${cat.id}`).addEventListener('input', recalc);
   });
+  // Langue : re-traduit la grille, les lignes détaillées et les résultats
+  const refreshLanguage = () => {
+    CATEGORIES.forEach(cat => { if (detailState[cat.id].active) renderItems(cat.id); });
+    refreshChipAmounts();
+    recalc();
+  };
+  PA.onChange(refreshLanguage);
+  PA.apply(catGrid);
+  refreshChipAmounts();
   recalc();
 </script>
 

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://academie.marc-ernoult.fr/sitemap.xml

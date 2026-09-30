@@ -5,6 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Mentions légales de Purple Academy — informations sur l'éditeur et l'hébergeur du site.">
 <title>Mentions légales — Purple Academy</title>
+<link rel="canonical" href="https://academie.marc-ernoult.fr/mentions-legales.html">
+<meta property="og:site_name" content="Purple Academy">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Mentions légales — Purple Academy">
+<meta property="og:description" content="Mentions légales de Purple Academy — informations sur l&#x27;éditeur et l&#x27;hébergeur du site.">
+<meta property="og:url" content="https://academie.marc-ernoult.fr/mentions-legales.html">
+<meta property="og:image" content="https://academie.marc-ernoult.fr/assets/marc-portrait.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mentions légales — Purple Academy">
+<meta name="twitter:description" content="Mentions légales de Purple Academy — informations sur l&#x27;éditeur et l&#x27;hébergeur du site.">
+<meta name="twitter:image" content="https://academie.marc-ernoult.fr/assets/marc-portrait.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet">
@@ -26,10 +38,13 @@
       <a href="index.html#a-propos">À propos</a>
       <a href="index.html#faq">FAQ</a>
     </nav>
-    <a class="btn solid" href="index.html#guide">Télécharger le guide</a>
-    <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Ouvrir le menu">
+    <div class="masthead-actions">
+      <button type="button" class="lang-toggle" data-lang-toggle aria-pressed="false" aria-label="Changer de langue"><span data-lang="fr" class="on">FR</span><span aria-hidden="true">/</span><span data-lang="en">EN</span></button>
+      <a class="btn solid" href="index.html#guide">Télécharger le guide</a>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Ouvrir le menu">
       <span class="nav-toggle-bars"></span>
     </button>
+    </div>
   </div>
   <div class="mobile-nav" id="mobile-nav" hidden>
     <nav class="mobile-nav-inner" aria-label="Navigation mobile">
@@ -55,7 +70,7 @@
   <div class="wrap prose">
     <h2>Éditeur du site</h2>
     <p>
-      Le site Purple Academy (purple-academy.fr) est édité par :<br>
+      Le site Purple Academy (academie.marc-ernoult.fr) est édité par :<br>
       Marc Ernoult, Entreprise Individuelle<br>
       Numéro SIRET : 518 087 184 00033<br>
       Adresse : 8 allée Pablo Picasso, 59152 Chéreng, France<br>
@@ -118,6 +133,7 @@
   </div>
 </footer>
 
+<script src="assets/i18n.js"></script>
 <script>
   const navToggle = document.getElementById('nav-toggle');
   const mobileNav = document.getElementById('mobile-nav');
@@ -125,7 +141,7 @@
     mobileNav.hidden = true;
     mobileNav.classList.remove('open');
     navToggle.setAttribute('aria-expanded', 'false');
-    navToggle.setAttribute('aria-label', 'Ouvrir le menu');
+    navToggle.setAttribute('aria-label', PA.t('Ouvrir le menu'));
   };
   navToggle.addEventListener('click', () => {
     const isOpen = navToggle.getAttribute('aria-expanded') === 'true';
@@ -134,7 +150,7 @@
       mobileNav.hidden = false;
       mobileNav.classList.add('open');
       navToggle.setAttribute('aria-expanded', 'true');
-      navToggle.setAttribute('aria-label', 'Fermer le menu');
+      navToggle.setAttribute('aria-label', PA.t('Fermer le menu'));
     }
   });
   mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMobileNav));
