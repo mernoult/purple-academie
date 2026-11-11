@@ -32,7 +32,7 @@ async function sendGuideEmail(email: string, prenom: string, signedUrl: string |
     return;
   }
   const downloadSection = signedUrl
-    ? `<a href="${signedUrl}" style="background:#7C3AED;color:#fff;padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block;">Télécharger le guide</a>`
+    ? `<a href="${signedUrl}" style="background:#6D28D9;color:#fff;padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block;">Télécharger le guide</a>`
     : `<p>Le guide arrive très bientôt — nous te préviendrons dès qu'il sera prêt.</p>`;
 
   const res = await fetch("https://api.resend.com/emails", {

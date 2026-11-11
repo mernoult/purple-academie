@@ -14,7 +14,7 @@ Single-page site for a French financial-education / budgeting-coaching business 
 
 ## Brand
 
-- Primary color: violet `#7C3AED` (CTA buttons, links, accents).
+- Primary color: violet `#6D28D9` (CTA buttons, links, accents).
 - Fonts: `DM Serif Display` (headings/serif), `DM Sans` (body), loaded via Google Fonts.
 - Design reference points are listed in @Brief.md.
 

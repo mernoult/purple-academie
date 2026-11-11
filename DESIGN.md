@@ -3,9 +3,9 @@ name: Purple Academy
 description: Compagnon budgétaire chaleureux et structuré — fond crème, cartes arrondies à ombres douces, violet en aplats généreux.
 colors:
   violet:
-    value: "#7C3AED"
+    value: "#6D28D9"
   violet-ink:
-    value: "#4C1D95"
+    value: "#5B21B6"
   violet-soft:
     value: "#F1E9FE"
   violet-soft-2:
@@ -107,8 +107,8 @@ Une seule famille typographique (DM Sans) porte tout le système, du display mas
 Palette chaude à un seul accent : crème/blanc pour les surfaces, violet pour l'action et l'emphase, rouge réservé aux erreurs de formulaire.
 
 ### Primary
-- **Violet** (`#7C3AED`) : CTA pleins, panneau Méthode en aplat, icônes de marque.
-- **Violet Encre** (`#4C1D95`) : état hover/pressed des CTA, texte d'emphase sur fond clair, liens actifs.
+- **Violet** (`#6D28D9`) : CTA pleins, panneau Méthode en aplat, icônes de marque.
+- **Violet Encre** (`#5B21B6`) : état hover/pressed des CTA, texte d'emphase sur fond clair, liens actifs.
 
 ### Neutral
 - **Crème** (`#FBF7F1`) : fond de page par défaut — chaleureux, jamais blanc pur.
