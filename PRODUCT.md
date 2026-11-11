@@ -34,7 +34,7 @@ Une méthode personnelle éprouvée par le consultant lui-même : jeune cadre en
 ## Brand Commitments
 
 - Nom : Purple Academy.
-- Couleur primaire : violet `#7C3AED` (CTA, liens, accents).
+- Couleur primaire : violet `#6D28D9` (CTA, liens, accents).
 - Typographies : DM Serif Display (titres/serif), DM Sans (texte courant).
 - Référence de design évoquée dans le brief initial : univers épuré et moderne façon site de coach/consultant premium (ex. thamikabbaj.com).
 
